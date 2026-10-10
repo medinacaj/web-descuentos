@@ -1,0 +1,15 @@
+name: daily
+
+# Se activa en fase 1. Santiago es UTC-3 en horario de verano (sep–abr) y UTC-4 en invierno:
+# '0 11 * * *' = 08:00 en verano / 07:00 en invierno. El job valida la hora local antes de correr.
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 11 * * *"
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - run: echo "Pipeline diario pendiente de aprobación de fase 0."

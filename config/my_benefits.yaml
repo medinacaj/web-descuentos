@@ -1,0 +1,11 @@
+# Filtro (no límite) para etiquetar beneficios: te_aplica / te_aplicaria / no_te_aplica.
+# PENDIENTE antes de fase 2: tipo de tarjeta (crédito/débito/prepago) y producto de cada una, convenios adicionales.
+operators: [Entel, Movistar, WOM]
+wallets: [MACH]
+banks:
+  - issuer: BCI
+    cards: []        # ej. {type: credito, product: "Visa Signature"}
+  - issuer: Banco de Chile
+    cards: []
+cajas: []
+clubs: []

@@ -1,0 +1,243 @@
+# Registro de fuentes. Es un catálogo vivo: en fase 3 el sistema agrega fuentes nuevas con discovered_by: auto.
+#
+# readable: ok | partial | blocked | unknown   (lo completa tools/recon.py; NO se edita a mano)
+# trust_rank: 1 tienda oficial · 2 banco/emisor oficial · 3 app oficial · 4 TyC · 5 distribuidor autorizado
+#             6 marketplace · 7 comparador · 8 medio · 9 agregador/comunidad
+# only_hints: true => lo que salga de aquí nunca queda "confirmado".
+# probes: URLs que usa la fase 0 para probar lectura. Las rutas de promociones son candidatas;
+#         si una devuelve 404 se corrige tras el reconocimiento.
+
+defaults:
+  sample_query: "iphone 15 pro 256gb"
+
+sources:
+  # ---------------------------------------------------------------- retail
+  - id: falabella
+    name: Falabella
+    kind: retail
+    base_url: https://www.falabella.com/falabella-cl
+    frequency: daily
+    trust_rank: 1        # tienda; su marketplace (Falabella.com vendedores externos) es rank 6
+    readable: unknown
+    probes:
+      product: https://www.falabella.com/falabella-cl/search?Ntt=iphone+15+pro+256gb
+      promos: https://www.falabella.com/falabella-cl/page/ofertas-falabella
+
+  - id: paris
+    name: Paris
+    kind: retail
+    base_url: https://www.paris.cl
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://www.paris.cl/search/?q=iphone+15+pro+256gb
+      promos: https://www.paris.cl/ofertas/
+
+  - id: ripley
+    name: Ripley
+    kind: retail
+    base_url: https://simple.ripley.cl
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://simple.ripley.cl/search/iphone%2015%20pro%20256gb
+      promos: https://simple.ripley.cl/minisitios/ofertas
+
+  - id: lider
+    name: Lider
+    kind: retail
+    base_url: https://www.lider.cl
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://www.lider.cl/search?q=iphone%2015%20pro%20256gb
+      promos: https://www.lider.cl/ofertas
+
+  - id: hites
+    name: Hites
+    kind: retail
+    base_url: https://www.hites.com
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://www.hites.com/search?q=iphone+15+pro+256gb
+      promos: https://www.hites.com/ofertas
+
+  - id: pcfactory
+    name: PC Factory
+    kind: retail
+    base_url: https://www.pcfactory.cl
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://www.pcfactory.cl/buscar?valor=iphone%2015%20pro%20256gb
+      promos: https://www.pcfactory.cl/ofertas
+
+  - id: spdigital
+    name: SP Digital
+    kind: retail
+    base_url: https://www.spdigital.cl
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://www.spdigital.cl/search/?q=iphone%2015%20pro%20256gb
+      promos: https://www.spdigital.cl/ofertas/
+
+  - id: mercadolibre
+    name: Mercado Libre
+    kind: retail
+    base_url: https://www.mercadolibre.cl
+    frequency: daily
+    trust_rank: 6        # marketplace: plataforma ≠ vendedor
+    readable: unknown
+    probes:
+      api: https://api.mercadolibre.com/sites/MLC/search?q=iphone%2015%20pro%20256gb&limit=5
+      product: https://listado.mercadolibre.cl/iphone-15-pro-256gb
+      promos: https://www.mercadolibre.cl/ofertas
+
+  - id: apple_cl
+    name: Apple Store Chile
+    kind: retail
+    base_url: https://www.apple.com/cl
+    frequency: weekly    # referencia de precio nuevo oficial
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://www.apple.com/cl/shop/buy-iphone
+      promos: https://www.apple.com/cl/shop/refurbished/iphone
+
+  - id: maconline
+    name: MacOnline (distribuidor Apple)
+    kind: retail
+    base_url: https://www.maconline.com
+    frequency: daily
+    trust_rank: 5
+    readable: unknown
+    probes:
+      product: https://www.maconline.com/search?q=iphone+15+pro
+      promos: https://www.maconline.com/ofertas
+
+  # ----------------------------------------------------- bancos y billeteras
+  - id: bci
+    name: BCI
+    kind: banco
+    base_url: https://www.bci.cl
+    frequency: weekly
+    trust_rank: 2
+    readable: unknown
+    probes:
+      promos: https://www.bci.cl/beneficios/beneficios-bci
+
+  - id: bancochile
+    name: Banco de Chile
+    kind: banco
+    base_url: https://sitiospublicos.bancochile.cl
+    frequency: weekly
+    trust_rank: 2
+    readable: unknown
+    probes:
+      promos: https://sitiospublicos.bancochile.cl/personas/beneficios
+
+  - id: santander
+    name: Santander Chile
+    kind: banco
+    base_url: https://banco.santander.cl
+    frequency: weekly
+    trust_rank: 2
+    readable: unknown
+    probes:
+      promos: https://banco.santander.cl/beneficios
+
+  - id: mach
+    name: MACH
+    kind: billetera
+    base_url: https://www.somosmach.com
+    frequency: weekly
+    trust_rank: 2
+    readable: unknown
+    probes:
+      promos: https://www.somosmach.com/beneficios
+
+  - id: tenpo
+    name: Tenpo
+    kind: billetera
+    base_url: https://www.tenpo.cl
+    frequency: weekly
+    trust_rank: 2
+    readable: unknown
+    probes:
+      promos: https://www.tenpo.cl/beneficios
+
+  - id: cajalosandes
+    name: Caja Los Andes
+    kind: caja
+    base_url: https://www.cajalosandes.cl
+    frequency: weekly
+    trust_rank: 2
+    readable: unknown
+    probes:
+      promos: https://www.cajalosandes.cl/beneficios
+
+  # --------------------------------------------------------------- operadores
+  - id: entel
+    name: Entel
+    kind: operador
+    base_url: https://www.entel.cl
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://www.entel.cl/equipos
+      promos: https://www.entel.cl/beneficios
+
+  - id: movistar
+    name: Movistar
+    kind: operador
+    base_url: https://ww2.movistar.cl
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://catalogo.movistar.cl/equipomovil/
+      promos: https://ww2.movistar.cl/beneficios/
+
+  - id: wom
+    name: WOM
+    kind: operador
+    base_url: https://store.wom.cl
+    frequency: daily
+    trust_rank: 1
+    readable: unknown
+    probes:
+      product: https://store.wom.cl/equipos
+      promos: https://www.wom.cl/beneficios/
+
+  # ------------------------------------------------- comparadores (solo pistas)
+  - id: solotodo
+    name: SoloTodo
+    kind: comparador
+    base_url: https://www.solotodo.cl
+    frequency: daily
+    trust_rank: 7
+    only_hints: true
+    readable: unknown
+    probes:
+      api: https://publicapi.solotodo.com/products/?search=iphone%2015%20pro%20256&page_size=5
+      product: https://www.solotodo.cl/search?search=iphone%2015%20pro%20256
+
+  - id: knasta
+    name: Knasta
+    kind: comparador
+    base_url: https://knasta.cl
+    frequency: daily
+    trust_rank: 7
+    only_hints: true
+    readable: unknown
+    probes:
+      product: https://knasta.cl/results?q=iphone%2015%20pro%20256gb

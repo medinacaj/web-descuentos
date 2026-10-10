@@ -1,0 +1,46 @@
+name: recon (fase 0)
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "ids de fuentes separados por coma (vacío = todas)"
+        required: false
+        default: ""
+  push:
+    branches: [master, main]
+    paths: [config/sources.yaml, tools/**, scrapers/base.py, .github/workflows/recon.yml]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recon
+  cancel-in-progress: false
+
+jobs:
+  recon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - run: python -m playwright install --with-deps chromium
+      - name: Reconocimiento
+        run: python -m tools.recon --write-sources ${{ inputs.only && format('--only {0}', inputs.only) || '' }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recon-report
+          path: reports/
+      - name: Guardar mapa en el repositorio
+        run: |
+          git config user.name "recon-bot"
+          git config user.email "recon-bot@users.noreply.github.com"
+          git add reports/ config/sources.yaml
+          git diff --cached --quiet || git commit -m "recon: mapa de legibilidad $(date +%F) [skip ci]"
+          git push

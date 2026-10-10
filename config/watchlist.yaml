@@ -1,0 +1,14 @@
+# Watchlist: variante bloqueada. Nunca se compara una capacidad distinta a la exigida.
+products:
+  - id: iphone-15-pro-256
+    name: iPhone 15 Pro 256 GB
+    brand: Apple
+    category: smartphone
+    variant: {model: "iPhone 15 Pro", storage_gb: 256}
+    min_storage_gb: 256
+    exclude_terms: ["max", "128gb", "128 gb", "funda", "carcasa", "lámina", "case"]
+    conditions_tracked: [nuevo, reacondicionado, seminuevo]   # nunca se mezclan
+    targets:   # orientativos; se recalibran con evidencia
+      reacondicionado: {buena: 750000, muy_buena: 700000, sobresaliente: 650000}
+      seminuevo:       {buena: 750000, muy_buena: 700000, sobresaliente: 650000}
+      nuevo: null      # se define con el historial
