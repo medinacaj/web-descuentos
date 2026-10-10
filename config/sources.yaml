@@ -18,7 +18,8 @@ sources:
     base_url: https://www.falabella.com/falabella-cl
     frequency: daily
     trust_rank: 1        # tienda; su marketplace (Falabella.com vendedores externos) es rank 6
-    readable: unknown
+    readable: partial
+    readable_cause: "product: HTML estático; promos: la página carga pero no se detectan precios/beneficios"
     probes:
       product: https://www.falabella.com/falabella-cl/search?Ntt=iphone+15+pro+256gb
       promos: https://www.falabella.com/falabella-cl/page/ofertas-falabella
@@ -29,7 +30,8 @@ sources:
     base_url: https://www.paris.cl
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: blocked
+    readable_cause: "product: bloqueo/WAF (http_403); promos: bloqueo/WAF (http_403)"
     probes:
       product: https://www.paris.cl/search/?q=iphone+15+pro+256gb
       promos: https://www.paris.cl/ofertas/
@@ -40,7 +42,8 @@ sources:
     base_url: https://simple.ripley.cl
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: blocked
+    readable_cause: "product: bloqueo/WAF (cloudflare); promos: bloqueo/WAF (cloudflare)"
     probes:
       product: https://simple.ripley.cl/search/iphone%2015%20pro%20256gb
       promos: https://simple.ripley.cl/minisitios/ofertas
@@ -51,7 +54,8 @@ sources:
     base_url: https://www.lider.cl
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: partial
+    readable_cause: "product: HTML estático; promos: bloqueo/WAF (perimeterx)"
     probes:
       product: https://www.lider.cl/search?q=iphone%2015%20pro%20256gb
       promos: https://www.lider.cl/ofertas
@@ -62,7 +66,8 @@ sources:
     base_url: https://www.hites.com
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: ok
+    readable_cause: "product: HTML estático; promos: HTML estático"
     probes:
       product: https://www.hites.com/search?q=iphone+15+pro+256gb
       promos: https://www.hites.com/ofertas
@@ -73,7 +78,8 @@ sources:
     base_url: https://www.pcfactory.cl
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: partial
+    readable_cause: "product: requiere navegador (JS dinámico); promos: la página carga pero no se detectan precios/beneficios"
     probes:
       product: https://www.pcfactory.cl/buscar?valor=iphone%2015%20pro%20256gb
       promos: https://www.pcfactory.cl/ofertas
@@ -84,7 +90,8 @@ sources:
     base_url: https://www.spdigital.cl
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: blocked
+    readable_cause: "product: bloqueo/WAF (cloudflare); promos: bloqueo/WAF (cloudflare)"
     probes:
       product: https://www.spdigital.cl/search/?q=iphone%2015%20pro%20256gb
       promos: https://www.spdigital.cl/ofertas/
@@ -95,7 +102,8 @@ sources:
     base_url: https://www.mercadolibre.cl
     frequency: daily
     trust_rank: 6        # marketplace: plataforma ≠ vendedor
-    readable: unknown
+    readable: partial
+    readable_cause: "api: robots.txt prohíbe la ruta; no se pidió; product: la página carga pero no se detectan precios/beneficios; promos: la página carga pero no se detectan precios/beneficios"
     probes:
       api: https://api.mercadolibre.com/sites/MLC/search?q=iphone%2015%20pro%20256gb&limit=5
       product: https://listado.mercadolibre.cl/iphone-15-pro-256gb
@@ -107,7 +115,8 @@ sources:
     base_url: https://www.apple.com/cl
     frequency: weekly    # referencia de precio nuevo oficial
     trust_rank: 1
-    readable: unknown
+    readable: partial
+    readable_cause: "product: requiere navegador (JS dinámico); promos: 404: la ruta de prueba no existe; corregir URL"
     probes:
       product: https://www.apple.com/cl/shop/buy-iphone
       promos: https://www.apple.com/cl/shop/refurbished/iphone
@@ -119,6 +128,7 @@ sources:
     frequency: daily
     trust_rank: 5
     readable: unknown
+    readable_cause: "product: 404: la ruta de prueba no existe; corregir URL; promos: 404: la ruta de prueba no existe; corregir URL"
     probes:
       product: https://www.maconline.com/search?q=iphone+15+pro
       promos: https://www.maconline.com/ofertas
@@ -130,7 +140,8 @@ sources:
     base_url: https://www.bci.cl
     frequency: weekly
     trust_rank: 2
-    readable: unknown
+    readable: blocked
+    readable_cause: "promos: bloqueo/WAF (cloudflare)"
     probes:
       promos: https://www.bci.cl/beneficios/beneficios-bci
 
@@ -140,7 +151,8 @@ sources:
     base_url: https://sitiospublicos.bancochile.cl
     frequency: weekly
     trust_rank: 2
-    readable: unknown
+    readable: partial
+    readable_cause: "promos: la página carga pero no se detectan precios/beneficios"
     probes:
       promos: https://sitiospublicos.bancochile.cl/personas/beneficios
 
@@ -150,7 +162,8 @@ sources:
     base_url: https://banco.santander.cl
     frequency: weekly
     trust_rank: 2
-    readable: unknown
+    readable: blocked
+    readable_cause: "promos: bloqueo/WAF (http_403)"
     probes:
       promos: https://banco.santander.cl/beneficios
 
@@ -160,7 +173,8 @@ sources:
     base_url: https://www.somosmach.com
     frequency: weekly
     trust_rank: 2
-    readable: unknown
+    readable: ok
+    readable_cause: "promos: HTML estático"
     probes:
       promos: https://www.somosmach.com/beneficios
 
@@ -170,7 +184,8 @@ sources:
     base_url: https://www.tenpo.cl
     frequency: weekly
     trust_rank: 2
-    readable: unknown
+    readable: ok
+    readable_cause: "promos: HTML estático"
     probes:
       promos: https://www.tenpo.cl/beneficios
 
@@ -181,6 +196,7 @@ sources:
     frequency: weekly
     trust_rank: 2
     readable: unknown
+    readable_cause: "promos: 404: la ruta de prueba no existe; corregir URL"
     probes:
       promos: https://www.cajalosandes.cl/beneficios
 
@@ -191,7 +207,8 @@ sources:
     base_url: https://www.entel.cl
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: partial
+    readable_cause: "product: requiere navegador (JS dinámico); promos: la página carga pero no se detectan precios/beneficios"
     probes:
       product: https://www.entel.cl/equipos
       promos: https://www.entel.cl/beneficios
@@ -202,7 +219,8 @@ sources:
     base_url: https://ww2.movistar.cl
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: ok
+    readable_cause: "product: HTML estático; promos: HTML estático"
     probes:
       product: https://catalogo.movistar.cl/equipomovil/
       promos: https://ww2.movistar.cl/beneficios/
@@ -213,7 +231,8 @@ sources:
     base_url: https://store.wom.cl
     frequency: daily
     trust_rank: 1
-    readable: unknown
+    readable: ok
+    readable_cause: "product: requiere navegador (JS dinámico); promos: HTML estático"
     probes:
       product: https://store.wom.cl/equipos
       promos: https://www.wom.cl/beneficios/
@@ -226,7 +245,8 @@ sources:
     frequency: daily
     trust_rank: 7
     only_hints: true
-    readable: unknown
+    readable: ok
+    readable_cause: "api: API pública; product: robots.txt prohíbe la ruta; no se pidió"
     probes:
       api: https://publicapi.solotodo.com/products/?search=iphone%2015%20pro%20256&page_size=5
       product: https://www.solotodo.cl/search?search=iphone%2015%20pro%20256
@@ -238,6 +258,7 @@ sources:
     frequency: daily
     trust_rank: 7
     only_hints: true
-    readable: unknown
+    readable: blocked
+    readable_cause: "product: bloqueo/WAF (http_403)"
     probes:
       product: https://knasta.cl/results?q=iphone%2015%20pro%20256gb
