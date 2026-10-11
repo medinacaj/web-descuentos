@@ -63,6 +63,13 @@ def detect_ua() -> str:
     return USER_AGENT
 
 
+GOOD = ("ok", "ok_js")
+RANK = {"ok": 0, "ok_js": 1, "precios_sin_muestra": 2, "sin_datos": 3, "login": 4, "bloqueado": 5,
+        "url_invalida": 6, "robots": 7, "no_alcanzable": 8}
+SEARCH_INPUTS = ("q", "Ntt", "search", "s", "query", "valor", "term", "k", "text", "busqueda")
+PROMO_LINK_RE = re.compile(r"beneficio|oferta|promoci|descuento|cyber|liquidaci|cupon", re.I)
+
+
 async def probe_one(client: PoliteClient, source: dict, probe: str, url: str, use_browser: bool) -> dict:
     out: dict = {"probe": probe, "url": url}
     allowed = await client.robots_allows(url)
@@ -78,17 +85,15 @@ async def probe_one(client: PoliteClient, source: dict, probe: str, url: str, us
         out["static"] = detect.analyze_api(r.text, r.status, source["id"])
     else:
         out["static"] = detect.analyze_html(r.text, r.status, r.final_url, probe)
-        out["final_url"] = r.final_url
 
     st = out["static"]
-    hard_block = st.get("block") in ("cloudflare", "imperva", "perimeterx", "datadome", "captcha")
-    if probe != "api" and use_browser and not st.get("has_data") and not hard_block:
+    if probe != "api" and use_browser and not st.get("has_data") and not st.get("block") \
+            and not st.get("not_found") and not st.get("error"):
         rr = await render(url)
-        if rr["error"]:
-            out["browser"] = {"error": rr["error"]}
-        else:
-            out["browser"] = detect.analyze_html(rr["html"], rr["status"], rr["final_url"], probe)
-
+        out["browser"] = {"error": rr["error"]} if rr["error"] else \
+            detect.analyze_html(rr["html"], rr["status"], rr["final_url"], probe)
+        out["_html"] = rr.get("html", "")
+    out["_static_html"] = r.text if not r.error else ""
     out["verdict"], out["cause"] = verdict(out, probe)
     return out
 
@@ -99,42 +104,103 @@ def verdict(o: dict, probe: str) -> tuple[str, str]:
         return "ok", "API pública" if probe == "api" else "HTML estático"
     if br and br.get("has_data"):
         return "ok_js", "requiere navegador (JS dinámico)"
-    for layer in (br, st):
+    for layer in (st, br):
         if not layer:
             continue
         if layer.get("block"):
-            return "bloqueado", f"bloqueo/WAF ({layer['block']})"
+            return "bloqueado", f"bloqueo/WAF ({layer['block']}, HTTP {layer.get('status')})"
         if layer.get("login"):
-            return "login", "exige login/token"
+            return "login", "exige login/verificación de cuenta o token"
+        if layer.get("not_found"):
+            return "url_invalida", "404/not-found: la ruta de prueba no existe"
+    for layer in (br, st):
+        if layer and layer.get("generic_prices"):
+            how = "con navegador" if layer is br else "HTML estático"
+            return "precios_sin_muestra", f"lee precios ({how}) pero no apareció el producto de ejemplo"
     if st.get("error") and (not br or br.get("error")):
         return "no_alcanzable", st["error"][:120]
-    status = (br or st).get("status")
-    if status == 404:
-        return "url_invalida", "404: la ruta de prueba no existe; corregir URL"
-    if probe == "api":
-        return "sin_datos", f"API sin resultados ({st.get('api_message') or status})"
     return "sin_datos", "la página carga pero no se detectan precios/beneficios"
+
+
+def discover(html: str, base: str, probe: str, query: str) -> list[str]:
+    """Busca en la portada el formulario de búsqueda (producto) o enlaces de promociones."""
+    from urllib.parse import urljoin, urlsplit, quote_plus
+    from selectolax.lexbor import LexborHTMLParser
+
+    tree = LexborHTMLParser(html or "")
+    host = urlsplit(base).netloc.split(".", 1)[-1]  # dominio sin subdominio
+    found: list[str] = []
+    if probe == "product":
+        for form in tree.css("form"):
+            for inp in form.css("input"):
+                name = inp.attributes.get("name") or ""
+                if (inp.attributes.get("type") == "search" and name) or name in SEARCH_INPUTS:
+                    action = urljoin(base + "/", form.attributes.get("action") or "")
+                    found.append(f"{action}{'&' if '?' in action else '?'}{name}={quote_plus(query)}")
+                    break
+    else:
+        for a in tree.css("a[href]"):
+            href = urljoin(base + "/", a.attributes.get("href") or "")
+            label = (a.text() or "") + " " + href
+            if PROMO_LINK_RE.search(label) and host in urlsplit(href).netloc and href not in found:
+                found.append(href.split("#")[0])
+    return found[:2]
+
+
+async def probe_with_discovery(client, source, probe, url, use_browser, query, home_cache) -> dict:
+    res = await probe_one(client, source, probe, url, use_browser)
+    if probe == "api" or res["verdict"] in GOOD + ("bloqueado", "login", "robots", "no_alcanzable"):
+        return strip(res)
+    base = source["base_url"].rstrip("/")
+    if base not in home_cache:
+        h = await client.get(base)
+        html = h.text if not h.error else ""
+        cands = discover(html, base, "product", query) + discover(html, base, "promos", query)
+        if use_browser and not cands and not h.error and h.status == 200:
+            html = (await render(base))["html"]
+        home_cache[base] = html
+    for cand in discover(home_cache[base], base, probe, query):
+        if cand == url:
+            continue
+        print(f"[recon]   descubierta {probe}: {cand}", file=sys.stderr, flush=True)
+        alt = await probe_one(client, source, probe, cand, use_browser)
+        if RANK[alt["verdict"]] < RANK[res["verdict"]]:
+            alt["discovered_from"] = base
+            alt["first_try"] = {"url": url, "verdict": res["verdict"], "cause": res["cause"]}
+            res = alt
+        if res["verdict"] in GOOD:
+            break
+    return strip(res)
+
+
+def strip(res: dict) -> dict:
+    res.pop("_html", None)
+    res.pop("_static_html", None)
+    return res
 
 
 def source_readable(source: dict, probes: list[dict]) -> tuple[str, str]:
     by = {p["probe"]: p for p in probes}
-    good = {"ok", "ok_js"}
     main = "product" if source["kind"] in ("retail", "operador", "comparador") else "promos"
-    main_ok = any(by.get(k, {}).get("verdict") in good for k in (main, "api"))
-    others_ok = all(p["verdict"] in good for p in probes if p["probe"] not in (main, "api"))
+    main_ok = any(by.get(k, {}).get("verdict") in GOOD for k in (main, "api"))
+    others_ok = all(p["verdict"] in GOOD for p in probes if p["probe"] not in (main, "api"))
     causes = "; ".join(f"{p['probe']}: {p['cause']}" for p in probes)
     if main_ok and others_ok:
         return "ok", causes
-    if any(p["verdict"] in good for p in probes):
+    if any(p["verdict"] in GOOD + ("precios_sin_muestra",) for p in probes):
         return "partial", causes
     if all(p["verdict"] in ("bloqueado", "login", "robots") for p in probes):
         return "blocked", causes
-    return "unknown" if all(p["verdict"] in ("no_alcanzable", "url_invalida") for p in probes) else "partial", causes
+    if all(p["verdict"] in ("no_alcanzable", "url_invalida") for p in probes):
+        return "unknown", causes
+    return "partial", causes
 
 
 async def run(only: set[str] | None, use_browser: bool) -> dict:
     cfg = yaml.safe_load(SOURCES.read_text())
     client = PoliteClient(min_delay_s=4.0)
+    query = cfg.get("defaults", {}).get("sample_query", "iphone 15 pro 256gb")
+    home_cache: dict[str, str] = {}
     results = []
     try:
         for s in cfg["sources"]:
@@ -143,7 +209,7 @@ async def run(only: set[str] | None, use_browser: bool) -> dict:
             probes = []
             for name, url in (s.get("probes") or {}).items():
                 print(f"[recon] {s['id']}:{name} {url}", file=sys.stderr, flush=True)
-                probes.append(await probe_one(client, s, name, url, use_browser))
+                probes.append(await probe_with_discovery(client, s, name, url, use_browser, query, home_cache))
             readable, causes = source_readable(s, probes)
             results.append({"id": s["id"], "name": s["name"], "kind": s["kind"], "readable": readable,
                             "causes": causes, "probes": probes})
@@ -180,6 +246,9 @@ def to_markdown(rep: dict) -> str:
     lines += ["", "## Causas por fuente", ""]
     for r in rs:
         lines.append(f"- **{r['name']}**: {r['causes']}")
+        for p in r["probes"]:
+            if p.get("first_try"):
+                lines.append(f"  - {p['probe']}: URL descubierta {p['url']} (la configurada dio {p['first_try']['verdict']})")
     lines += ["", "_Las muestras de precio son evidencia de legibilidad, no precios validados para alertas._"]
     return "\n".join(lines) + "\n"
 

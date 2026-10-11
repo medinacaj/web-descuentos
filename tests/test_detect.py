@@ -59,3 +59,36 @@ def test_verdict_and_readable():
     probes = [{"probe": "product", "verdict": "ok_js", "cause": "js"}, {"probe": "promos", "verdict": "bloqueado", "cause": "waf"}]
     assert source_readable({"kind": "retail"}, probes)[0] == "partial"
     assert source_readable({"kind": "banco"}, [{"probe": "promos", "verdict": "login", "cause": "x"}])[0] == "blocked"
+
+
+def test_404_with_prices_is_not_data():
+    res = detect.analyze_html(PRODUCT_HTML, 404, "https://x.cl/s", "product")
+    assert res["not_found"] and not res["has_data"]
+    assert verdict({"static": res}, "product")[0] == "url_invalida"
+
+
+def test_waf_script_on_healthy_page_is_not_block():
+    html = "<html><head><script>window._pxAppId='x'</script></head><body>" + "contenido " * 200 + PRODUCT_HTML + "</body></html>"
+    res = detect.analyze_html(html, 200, "https://x.cl/s", "product")
+    assert res["waf"] == "perimeterx" and res["block"] is None and res["has_data"]
+
+
+def test_account_verification_redirect_is_login():
+    res = detect.analyze_html("<html><body>Verifica</body></html>", 200,
+                              "https://www.mercadolibre.cl/gz/account-verification?go=x", "product")
+    assert res["login"] and verdict({"static": res}, "product")[0] == "login"
+
+
+def test_generic_prices_without_sample():
+    html = "<body>" + " ".join(f"<p>Notebook {i} $1.{i}00.990</p>" for i in range(1, 6)) + "</body>"
+    res = detect.analyze_html(html, 200, "https://x.cl", "product")
+    assert not res["has_data"] and res["generic_prices"]
+    assert verdict({"static": res}, "product")[0] == "precios_sin_muestra"
+
+
+def test_discover_search_form_and_promo_links():
+    from tools.recon import discover
+    home = """<form action="/busqueda"><input type="search" name="q"></form>
+    <a href="/beneficios/tarjeta">Beneficios</a><a href="https://otro.com/oferta">x</a>"""
+    assert discover(home, "https://www.tienda.cl", "product", "iphone 15") == ["https://www.tienda.cl/busqueda?q=iphone+15"]
+    assert discover(home, "https://www.tienda.cl", "promos", "") == ["https://www.tienda.cl/beneficios/tarjeta"]

@@ -17,7 +17,7 @@ BLOCK_MARKERS = {
     "datadome": ["captcha-delivery.com", "datadome"],
     "captcha": ["g-recaptcha", "hcaptcha.com", "are you a robot", "eres un robot"],
 }
-LOGIN_MARKERS = ["iniciar sesión para continuar", "debes iniciar sesión", "ingresa a tu cuenta para ver",
+LOGIN_MARKERS = ["account-verification", "iniciar sesión para continuar", "debes iniciar sesión", "ingresa a tu cuenta para ver",
                  "/login?redirect", "please log in"]
 
 # $1.299.990 / $ 1.299.990 / CLP 1.299.990
@@ -39,22 +39,33 @@ def visible_text(html: str) -> str:
     return re.sub(r"\s+", " ", body.text(separator=" ") if body else "")
 
 
-def detect_block(html: str, status: int | None) -> str | None:
+def detect_waf(html: str) -> str | None:
+    """Proveedor anti-bot presente en la página (informativo: su script aparece también en páginas sanas)."""
     low = html[:200_000].lower()
     for vendor, marks in BLOCK_MARKERS.items():
         if any(m in low for m in marks):
-            # datadome/akamai incluyen scripts aun en páginas sanas: solo cuenta si la respuesta es pobre.
-            if vendor in ("akamai", "datadome") and status == 200 and len(low) > 60_000:
-                continue
             return vendor
-    if status in (401, 403, 429):
-        return f"http_{status}"
+    return None
+
+
+def detect_block(html: str, status: int | None, text_chars: int) -> str | None:
+    """Bloqueo real: 401/403/429/503, o una página de desafío (marcador anti-bot + casi sin contenido)."""
+    waf = detect_waf(html)
+    if status in (401, 403, 429, 503):
+        return waf or f"http_{status}"
+    if waf and status == 200 and text_chars < 800:
+        return waf
     return None
 
 
 def detect_login(html: str, final_url: str) -> bool:
     low = html[:200_000].lower()
-    return any(m in low for m in LOGIN_MARKERS) or bool(re.search(r"/(login|signin|ingresar)\b", final_url, re.I))
+    return any(m in low for m in LOGIN_MARKERS) or bool(
+        re.search(r"/(login|signin|ingresar|account-verification)\b", final_url, re.I))
+
+
+def is_not_found(status: int | None, final_url: str) -> bool:
+    return status == 404 or bool(re.search(r"/(not-found|404)\b", final_url, re.I))
 
 
 def jsonld_offers(html: str) -> list[dict]:
@@ -117,10 +128,13 @@ def analyze_html(html: str, status: int | None, final_url: str, probe: str) -> d
     prices = [parse_clp(x) for x in CLP_RE.findall(text)]
     res = {
         "status": status,
+        "final_url": final_url,
         "bytes": len(html),
         "text_chars": len(text),
-        "block": detect_block(html, status),
+        "waf": detect_waf(html) if html else None,
+        "block": detect_block(html, status, len(text)) if html or status else None,
         "login": detect_login(html, final_url) if html else False,
+        "not_found": is_not_found(status, final_url),
         "jsonld_offers": jsonld_offers(html)[:5] if html else [],
         "embedded_state": embedded_state(html) if html else [],
         "clp_prices_in_text": len(prices),
@@ -129,12 +143,20 @@ def analyze_html(html: str, status: int | None, final_url: str, probe: str) -> d
         "promo_word_hits": len(PROMO_WORDS_RE.findall(text)),
     }
     res["has_data"] = has_data(res, probe)
+    # Precios presentes pero sin el producto de ejemplo: legible, pero la búsqueda no quedó demostrada.
+    res["generic_prices"] = probe == "product" and not res["has_data"] and usable(res) and len(prices) >= 3
     return res
 
 
+def usable(res: dict) -> bool:
+    return not (res["block"] or res["login"] or res["not_found"] or (res["status"] or 0) >= 400)
+
+
 def has_data(res: dict, probe: str) -> bool:
+    if not usable(res):
+        return False
     if probe == "product":
-        return bool(res["samples"] or res["jsonld_offers"]) or res["clp_prices_in_text"] >= 3
+        return bool(res["samples"] or res["jsonld_offers"])
     if probe == "promos":
         return res["promo_pct_hits"] >= 3 or res["promo_word_hits"] >= 5
     return False
@@ -158,7 +180,9 @@ def analyze_api(body: str, status: int | None, source_id: str) -> dict:
                                        "condition": r.get("condition"), "seller_id": (r.get("seller") or {}).get("id")})
             else:
                 res["samples"].append({"title": r.get("name") or r.get("title"), "id": r.get("id")})
-        res["has_data"] = True
+        # La API responde; solo cuenta como dato si la búsqueda realmente filtró el producto de ejemplo.
+        res["has_data"] = any(SAMPLE_RE.search(str(x.get("title") or "")) for x in res["samples"])
+        res["generic_prices"] = not res["has_data"]
     elif isinstance(data, dict):
         res["api_message"] = str(data.get("message") or data.get("error") or "")[:200]
     return res

@@ -170,13 +170,13 @@ sources:
   - id: mach
     name: MACH
     kind: billetera
-    base_url: https://www.somosmach.com
+    base_url: https://www.machbank.cl
     frequency: weekly
     trust_rank: 2
     readable: ok
     readable_cause: "promos: HTML estático"
     probes:
-      promos: https://www.somosmach.com/beneficios
+      promos: https://www.machbank.cl/beneficios
 
   - id: tenpo
     name: Tenpo
