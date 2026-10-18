@@ -25,3 +25,11 @@ Ver `.env.example`: `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `ANTHROPIC_API_KEY`,
 
 ## Base de datos
 `db/schema.sql` se ejecuta tal cual en el editor SQL de Supabase (idempotente, RLS activado; el sistema usa la service key).
+
+## Fase 1 · Controles de datos (P1, 18-10-2026)
+
+Fuentes iniciales seleccionadas: Falabella y Hites (legibilidad técnica satisfactoria en fase 0), Líder (parcial, solo búsqueda de producto). Registro: `config/phase1_sources.json`. No implica disponibilidad de artículos, precios confirmados ni aceptación comercial.
+
+`core/verify.py` exige URL directa HTTPS del dominio permitido, iPhone 15 Pro **256 GB** sin variante Max, condición explícita (nuevo/reacondicionado/seminuevo), CLP, precio positivo, stock confirmado, evidencia textual y captura reciente (48 h). `core/pricing.py` compara cada condición por separado y descarta candidatos incompletos. Ejecutar `python -m tools.phase1 archivo.json` para validar un lote. Resultados quedan en `reports/candidates_checked.json` sin activar correos ni alertas.
+
+**Queda pendiente** un recolector real y autorizado por comercio, 10 fichas de productos con evidencias y validación final de precio/stock/condiciones. No declarar operativo el envío de alertas ni activar el cron diario sin superar esa aceptación. El mapa de fase 0 sigue siendo exploratorio.
