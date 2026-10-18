@@ -1,0 +1,1500 @@
+{
+  "checked_at": "2026-10-18T11:11:26-03:00",
+  "runner": "GitHub Actions 1000000428",
+  "sources": [
+    {
+      "id": "falabella",
+      "name": "Falabella",
+      "kind": "retail",
+      "readable": "ok",
+      "causes": "product: HTML estático; promos: requiere navegador (JS dinámico)",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.falabella.com/falabella-cl/search?Ntt=iphone+15+pro+256gb",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.falabella.com/falabella-cl/search?Ntt=iphone+15+pro+256gb",
+            "bytes": 2133124,
+            "text_chars": 5899,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "__NEXT_DATA__"
+            ],
+            "clp_prices_in_text": 74,
+            "samples": [
+              {
+                "title": "IPhone 15 Pro 256GB Natural Reacondicionado Por Kiss Elec",
+                "price": 799990
+              },
+              {
+                "title": "IPHONE 15 PRO 5G 8+256GB REACONDICIONADO Por Techsaurus",
+                "price": 1089990
+              },
+              {
+                "title": "Iphone 15 Pro fully Unlocked 256gb grade A Por Wireless Source",
+                "price": 873990
+              }
+            ],
+            "promo_pct_hits": 21,
+            "promo_word_hits": 9,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok",
+          "cause": "HTML estático"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.falabella.com/falabella-cl/page/ultimas-oportunidades?sid=HO_ABV_OFE_22",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.falabella.com/falabella-cl/page/ultimas-oportunidades?sid=HO_ABV_OFE_22",
+            "bytes": 585037,
+            "text_chars": 1639,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "__NEXT_DATA__"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 1,
+            "promo_word_hits": 1,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.falabella.com/falabella-cl/page/ultimas-oportunidades?sid=HO_ABV_OFE_22",
+            "bytes": 4301469,
+            "text_chars": 45737,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "__NEXT_DATA__",
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 1078,
+            "samples": [],
+            "promo_pct_hits": 472,
+            "promo_word_hits": 1,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok_js",
+          "cause": "requiere navegador (JS dinámico)",
+          "discovered_from": "https://www.falabella.com/falabella-cl",
+          "first_try": {
+            "url": "https://www.falabella.com/falabella-cl/page/ofertas-falabella",
+            "verdict": "url_invalida",
+            "cause": "404/not-found: la ruta de prueba no existe"
+          }
+        }
+      ]
+    },
+    {
+      "id": "paris",
+      "name": "Paris",
+      "kind": "retail",
+      "readable": "blocked",
+      "causes": "product: bloqueo/WAF (http_403, HTTP 403); promos: bloqueo/WAF (http_403, HTTP 403)",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.paris.cl/search/?q=iphone+15+pro+256gb",
+          "robots": "no_disponible",
+          "static": {
+            "status": 403,
+            "final_url": "https://www.paris.cl/search/?q=iphone+15+pro+256gb",
+            "bytes": 919,
+            "text_chars": 513,
+            "waf": null,
+            "block": "http_403",
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "bloqueado",
+          "cause": "bloqueo/WAF (http_403, HTTP 403)"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.paris.cl/ofertas/",
+          "robots": "no_disponible",
+          "static": {
+            "status": 403,
+            "final_url": "https://www.paris.cl/ofertas/",
+            "bytes": 919,
+            "text_chars": 513,
+            "waf": null,
+            "block": "http_403",
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "bloqueado",
+          "cause": "bloqueo/WAF (http_403, HTTP 403)"
+        }
+      ]
+    },
+    {
+      "id": "ripley",
+      "name": "Ripley",
+      "kind": "retail",
+      "readable": "blocked",
+      "causes": "product: bloqueo/WAF (cloudflare, HTTP 403); promos: bloqueo/WAF (cloudflare, HTTP 403)",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://simple.ripley.cl/search/iphone%2015%20pro%20256gb",
+          "robots": "no_disponible",
+          "static": {
+            "status": 403,
+            "final_url": "https://simple.ripley.cl/search/iphone%2015%20pro%20256gb",
+            "bytes": 138641,
+            "text_chars": 441,
+            "waf": "cloudflare",
+            "block": "cloudflare",
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "bloqueado",
+          "cause": "bloqueo/WAF (cloudflare, HTTP 403)"
+        },
+        {
+          "probe": "promos",
+          "url": "https://simple.ripley.cl/minisitios/ofertas",
+          "robots": "no_disponible",
+          "static": {
+            "status": 403,
+            "final_url": "https://simple.ripley.cl/minisitios/ofertas",
+            "bytes": 138641,
+            "text_chars": 441,
+            "waf": "cloudflare",
+            "block": "cloudflare",
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "bloqueado",
+          "cause": "bloqueo/WAF (cloudflare, HTTP 403)"
+        }
+      ]
+    },
+    {
+      "id": "lider",
+      "name": "Lider",
+      "kind": "retail",
+      "readable": "partial",
+      "causes": "product: HTML estático; promos: 404/not-found: la ruta de prueba no existe",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.lider.cl/search?q=iphone%2015%20pro%20256gb",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.lider.cl/search?q=iphone%2015%20pro%20256gb",
+            "bytes": 1045728,
+            "text_chars": 2426,
+            "waf": "perimeterx",
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "__NEXT_DATA__"
+            ],
+            "clp_prices_in_text": 30,
+            "samples": [
+              {
+                "title": "iphone 15 pro 256gb (1000+) iPhone 15 Pro 256GB Black Titanium Reacondicionado Reacondicionado Agregar",
+                "price": 829990
+              },
+              {
+                "title": "iPhone 15 Pro 256GB Black Titanium Reacondicionado Reacondicionado Agregar",
+                "price": 829990
+              },
+              {
+                "title": "iPhone 15 Pro 256GB Black Titanium Reacondicionado Available for Despacho gratis Despacho gratis Iphone 15 Pro 256gb Tit",
+                "price": 1349990
+              }
+            ],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok",
+          "cause": "HTML estático"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.lider.cl/ofertas",
+          "robots": "permitido",
+          "static": {
+            "status": 404,
+            "final_url": "https://www.lider.cl/ofertas",
+            "bytes": 358133,
+            "text_chars": 186,
+            "waf": "perimeterx",
+            "block": null,
+            "login": false,
+            "not_found": true,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "__NEXT_DATA__"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "url_invalida",
+          "cause": "404/not-found: la ruta de prueba no existe"
+        }
+      ]
+    },
+    {
+      "id": "hites",
+      "name": "Hites",
+      "kind": "retail",
+      "readable": "ok",
+      "causes": "product: HTML estático; promos: HTML estático",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.hites.com/search?q=iphone+15+pro+256gb",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.hites.com/busqueda?q=iphone%2015%20pro%20256gb",
+            "bytes": 3646082,
+            "text_chars": 102845,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [
+              {
+                "name": "Iphone 15 Pro Max 256gb White Titanium Reacondicionado",
+                "price": 949990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              },
+              {
+                "name": "Iphone 15 Pro Max 256gb Black Titanium Reacondicionado",
+                "price": 949990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              },
+              {
+                "name": "Iphone 15 Pro 256gb Black Titanium Reacondicionado",
+                "price": 849990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              },
+              {
+                "name": "Macbook Pro Touchbar 15 Pulgadas 16gb Ram, 256gb Ssd Intel Core I7 Reacondicionado",
+                "price": 649990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              },
+              {
+                "name": "Macbook Pro Touch Bar 15 Pulgadas 16gb Ram, 256gb Ssd Intel Core I7 Reacondicionado",
+                "price": 799990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              }
+            ],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 38,
+            "samples": [
+              {
+                "title": "Iphone 15 Pro 256gb Black Titanium Reacondicionado SKU: 10216000372001 Por: Digitek Almacenamiento: 256 GB Tamaño De Pan",
+                "price": 849990
+              }
+            ],
+            "promo_pct_hits": 10,
+            "promo_word_hits": 4,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok",
+          "cause": "HTML estático"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.hites.com/ofertas",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.hites.com/ofertas/",
+            "bytes": 7852700,
+            "text_chars": 265891,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [
+              {
+                "name": "Smartphone Samsung Galaxy A17 LTE / 4G / 128 GB / Negro / Liberado",
+                "price": 159990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              },
+              {
+                "name": "Vivo V30 Lite 256gb Rose Gold Reacondicionado",
+                "price": 139990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              },
+              {
+                "name": "Led 55\" Samsung U8000H / Ultra HD 4K / Vision AI Smart TV 2026",
+                "price": 339990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              },
+              {
+                "name": "Qled 65\" TCL T6D / Ultra HD 4K / Smart TV",
+                "price": 499990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              },
+              {
+                "name": "Tablet 10.9\" Samsung Galaxy Tab S10 FE / 8 GB RAM / 128 GB / Gris + S Pen",
+                "price": 459990,
+                "currency": "CLP",
+                "availability": "http://schema.org/InStock"
+              }
+            ],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 269,
+            "samples": [],
+            "promo_pct_hits": 84,
+            "promo_word_hits": 4,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok",
+          "cause": "HTML estático"
+        }
+      ]
+    },
+    {
+      "id": "pcfactory",
+      "name": "PC Factory",
+      "kind": "retail",
+      "readable": "partial",
+      "causes": "product: lee precios (con navegador) pero no apareció el producto de ejemplo; promos: requiere navegador (JS dinámico)",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.pcfactory.cl/buscar?valor=iphone%2015%20pro%20256gb",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.pcfactory.cl/busqueda-avanzada?search=*",
+            "bytes": 225471,
+            "text_chars": 1350,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.pcfactory.cl/busqueda-avanzada?search=*&size=12",
+            "bytes": 997453,
+            "text_chars": 30993,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 165,
+            "samples": [],
+            "promo_pct_hits": 52,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": true
+          },
+          "verdict": "precios_sin_muestra",
+          "cause": "lee precios (con navegador) pero no apareció el producto de ejemplo"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.pcfactory.cl/busqueda-avanzada?search=*",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.pcfactory.cl/busqueda-avanzada?search=*",
+            "bytes": 225471,
+            "text_chars": 1350,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.pcfactory.cl/busqueda-avanzada?search=*&size=12",
+            "bytes": 997464,
+            "text_chars": 30993,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 165,
+            "samples": [],
+            "promo_pct_hits": 52,
+            "promo_word_hits": 0,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok_js",
+          "cause": "requiere navegador (JS dinámico)",
+          "discovered_from": "https://www.pcfactory.cl",
+          "first_try": {
+            "url": "https://www.pcfactory.cl/ofertas",
+            "verdict": "sin_datos",
+            "cause": "la página carga pero no se detectan precios/beneficios"
+          }
+        }
+      ]
+    },
+    {
+      "id": "spdigital",
+      "name": "SP Digital",
+      "kind": "retail",
+      "readable": "blocked",
+      "causes": "product: bloqueo/WAF (cloudflare, HTTP 403); promos: bloqueo/WAF (cloudflare, HTTP 403)",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.spdigital.cl/search/?q=iphone%2015%20pro%20256gb",
+          "robots": "permitido",
+          "static": {
+            "status": 403,
+            "final_url": "https://www.spdigital.cl/search/?q=iphone%2015%20pro%20256gb",
+            "bytes": 4548,
+            "text_chars": 725,
+            "waf": "cloudflare",
+            "block": "cloudflare",
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "bloqueado",
+          "cause": "bloqueo/WAF (cloudflare, HTTP 403)"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.spdigital.cl/ofertas/",
+          "robots": "permitido",
+          "static": {
+            "status": 403,
+            "final_url": "https://www.spdigital.cl/ofertas/",
+            "bytes": 4548,
+            "text_chars": 725,
+            "waf": "cloudflare",
+            "block": "cloudflare",
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "bloqueado",
+          "cause": "bloqueo/WAF (cloudflare, HTTP 403)"
+        }
+      ]
+    },
+    {
+      "id": "mercadolibre",
+      "name": "Mercado Libre",
+      "kind": "retail",
+      "readable": "blocked",
+      "causes": "api: robots.txt prohíbe la ruta; no se pidió; product: exige login/verificación de cuenta o token; promos: exige login/verificación de cuenta o token",
+      "probes": [
+        {
+          "probe": "api",
+          "url": "https://api.mercadolibre.com/sites/MLC/search?q=iphone%2015%20pro%20256gb&limit=5",
+          "robots": "prohibido",
+          "verdict": "robots",
+          "cause": "robots.txt prohíbe la ruta; no se pidió"
+        },
+        {
+          "probe": "product",
+          "url": "https://listado.mercadolibre.cl/iphone-15-pro-256gb",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.mercadolibre.cl/captcha/wall?go_url=https%3A%2F%2Flistado.mercadolibre.cl%2Fiphone-15-pro-256gb&tid=96e42c00-1515-4e6b-8a84-c5ea4566da24",
+            "bytes": 131596,
+            "text_chars": 445,
+            "waf": null,
+            "block": null,
+            "login": true,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.mercadolibre.cl/captcha/wall?go_url=https%3A%2F%2Flistado.mercadolibre.cl%2Fiphone-15-pro-256gb&tid=c7e9ece3-47e2-402f-a71a-d31b2fbb6974",
+            "bytes": 136672,
+            "text_chars": 445,
+            "waf": "captcha",
+            "block": "captcha",
+            "login": true,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "login",
+          "cause": "exige login/verificación de cuenta o token"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.mercadolibre.cl/ofertas",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.mercadolibre.cl/captcha/wall?go_url=https%3A%2F%2Fwww.mercadolibre.cl%2Fofertas&tid=dcf4205e-cd52-40da-98d0-c9dfc2b19349",
+            "bytes": 67131,
+            "text_chars": 445,
+            "waf": null,
+            "block": null,
+            "login": true,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.mercadolibre.cl/captcha/wall?go_url=https%3A%2F%2Fwww.mercadolibre.cl%2Fofertas&tid=15620666-ab4b-4cdf-837d-7372eba55685",
+            "bytes": 136607,
+            "text_chars": 445,
+            "waf": "captcha",
+            "block": "captcha",
+            "login": true,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "login",
+          "cause": "exige login/verificación de cuenta o token"
+        }
+      ]
+    },
+    {
+      "id": "apple_cl",
+      "name": "Apple Store Chile",
+      "kind": "retail",
+      "readable": "partial",
+      "causes": "product: lee precios (con navegador) pero no apareció el producto de ejemplo; promos: 404/not-found: la ruta de prueba no existe",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.apple.com/cl/shop/buy-iphone",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.apple.com/cl/shop/buy-iphone",
+            "bytes": 440094,
+            "text_chars": 4928,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 2,
+            "samples": [],
+            "promo_pct_hits": 1,
+            "promo_word_hits": 1,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.apple.com/cl/shop/buy-iphone",
+            "bytes": 637351,
+            "text_chars": 17218,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 35,
+            "samples": [],
+            "promo_pct_hits": 2,
+            "promo_word_hits": 3,
+            "has_data": false,
+            "generic_prices": true
+          },
+          "verdict": "precios_sin_muestra",
+          "cause": "lee precios (con navegador) pero no apareció el producto de ejemplo"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.apple.com/cl/shop/refurbished/iphone",
+          "robots": "permitido",
+          "static": {
+            "status": 404,
+            "final_url": "https://www.apple.com/cl/shop/refurbished/iphone",
+            "bytes": 141190,
+            "text_chars": 1878,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": true,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 1,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "url_invalida",
+          "cause": "404/not-found: la ruta de prueba no existe"
+        }
+      ]
+    },
+    {
+      "id": "maconline",
+      "name": "MacOnline (distribuidor Apple)",
+      "kind": "retail",
+      "readable": "partial",
+      "causes": "product: 404/not-found: la ruta de prueba no existe; promos: la página carga pero no se detectan precios/beneficios",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.maconline.com/search?q=iphone+15+pro",
+          "robots": "permitido",
+          "static": {
+            "status": 404,
+            "final_url": "https://www.maconline.com/search?q=iphone+15+pro",
+            "bytes": 3484,
+            "text_chars": 99,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": true,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "url_invalida",
+          "cause": "404/not-found: la ruta de prueba no existe"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.maconline.com/t/accesorios?search%5Btaxon_ids%5D=836",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.maconline.com/t/accesorios?search%5Btaxon_ids%5D=836",
+            "bytes": 135854,
+            "text_chars": 3068,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 1,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.maconline.com/t/accesorios?search%5Btaxon_ids%5D=836",
+            "bytes": 158697,
+            "text_chars": 3126,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 3,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "sin_datos",
+          "cause": "la página carga pero no se detectan precios/beneficios",
+          "discovered_from": "https://www.maconline.com",
+          "first_try": {
+            "url": "https://www.maconline.com/ofertas",
+            "verdict": "url_invalida",
+            "cause": "404/not-found: la ruta de prueba no existe"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bci",
+      "name": "BCI",
+      "kind": "banco",
+      "readable": "ok",
+      "causes": "promos: requiere navegador (JS dinámico)",
+      "probes": [
+        {
+          "probe": "promos",
+          "url": "https://www.bci.cl/beneficios/beneficios-bci",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.bci.cl/beneficios/beneficios-bci",
+            "bytes": 194971,
+            "text_chars": 2727,
+            "waf": "cloudflare",
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.bci.cl/beneficios/beneficios-bci",
+            "bytes": 1038402,
+            "text_chars": 8914,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 11,
+            "promo_word_hits": 15,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok_js",
+          "cause": "requiere navegador (JS dinámico)"
+        }
+      ]
+    },
+    {
+      "id": "bancochile",
+      "name": "Banco de Chile",
+      "kind": "banco",
+      "readable": "partial",
+      "causes": "promos: la página carga pero no se detectan precios/beneficios",
+      "probes": [
+        {
+          "probe": "promos",
+          "url": "https://sitiospublicos.bancochile.cl/personas/beneficios",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://sitiospublicos.bancochile.cl/personas/beneficios",
+            "bytes": 932392,
+            "text_chars": 1,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://sitiospublicos.bancochile.cl/personas/beneficios",
+            "bytes": 1039148,
+            "text_chars": 1903,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "sin_datos",
+          "cause": "la página carga pero no se detectan precios/beneficios"
+        }
+      ]
+    },
+    {
+      "id": "santander",
+      "name": "Santander Chile",
+      "kind": "banco",
+      "readable": "blocked",
+      "causes": "promos: bloqueo/WAF (http_403, HTTP 403)",
+      "probes": [
+        {
+          "probe": "promos",
+          "url": "https://banco.santander.cl/beneficios",
+          "robots": "no_disponible",
+          "static": {
+            "status": 403,
+            "final_url": "https://banco.santander.cl/beneficios",
+            "bytes": 3283,
+            "text_chars": 438,
+            "waf": null,
+            "block": "http_403",
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "bloqueado",
+          "cause": "bloqueo/WAF (http_403, HTTP 403)"
+        }
+      ]
+    },
+    {
+      "id": "mach",
+      "name": "MACH",
+      "kind": "billetera",
+      "readable": "ok",
+      "causes": "promos: HTML estático",
+      "probes": [
+        {
+          "probe": "promos",
+          "url": "https://www.machbank.cl/beneficios",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.machbank.cl/beneficios",
+            "bytes": 7435165,
+            "text_chars": 5018,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 1,
+            "samples": [],
+            "promo_pct_hits": 7,
+            "promo_word_hits": 11,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok",
+          "cause": "HTML estático"
+        }
+      ]
+    },
+    {
+      "id": "tenpo",
+      "name": "Tenpo",
+      "kind": "billetera",
+      "readable": "ok",
+      "causes": "promos: HTML estático",
+      "probes": [
+        {
+          "probe": "promos",
+          "url": "https://www.tenpo.cl/beneficios",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.tenpo.cl/beneficios",
+            "bytes": 71533,
+            "text_chars": 4667,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 3,
+            "samples": [],
+            "promo_pct_hits": 7,
+            "promo_word_hits": 10,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok",
+          "cause": "HTML estático"
+        }
+      ]
+    },
+    {
+      "id": "cajalosandes",
+      "name": "Caja Los Andes",
+      "kind": "caja",
+      "readable": "partial",
+      "causes": "promos: la página carga pero no se detectan precios/beneficios",
+      "probes": [
+        {
+          "probe": "promos",
+          "url": "https://www.cajalosandes.cl/beneficiosdestacados",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.cajalosandes.cl/beneficiosdestacados",
+            "bytes": 202130,
+            "text_chars": 1007,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://www.cajalosandes.cl/beneficiosdestacados",
+            "bytes": 231687,
+            "text_chars": 2735,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 2,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 1,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "sin_datos",
+          "cause": "la página carga pero no se detectan precios/beneficios",
+          "discovered_from": "https://www.cajalosandes.cl",
+          "first_try": {
+            "url": "https://www.cajalosandes.cl/beneficios",
+            "verdict": "url_invalida",
+            "cause": "404/not-found: la ruta de prueba no existe"
+          }
+        }
+      ]
+    },
+    {
+      "id": "entel",
+      "name": "Entel",
+      "kind": "operador",
+      "readable": "partial",
+      "causes": "product: lee precios (con navegador) pero no apareció el producto de ejemplo; promos: HTML estático",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://www.entel.cl/equipos",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.entel.cl/equipos",
+            "bytes": 17157,
+            "text_chars": 1,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://miportal.entel.cl/personas/catalogo/celulares",
+            "bytes": 1938843,
+            "text_chars": 14341,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 138,
+            "samples": [],
+            "promo_pct_hits": 41,
+            "promo_word_hits": 89,
+            "has_data": false,
+            "generic_prices": true
+          },
+          "verdict": "precios_sin_muestra",
+          "cause": "lee precios (con navegador) pero no apareció el producto de ejemplo"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.entel.cl/planes/oferta-portabilidad",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.entel.cl/planes/oferta-portabilidad",
+            "bytes": 957569,
+            "text_chars": 98592,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [
+              {
+                "name": "Portabilidad: Oferta en Planes Móviles",
+                "price": "9995",
+                "currency": "CLP",
+                "availability": null
+              }
+            ],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 238,
+            "samples": [],
+            "promo_pct_hits": 5,
+            "promo_word_hits": 15,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok",
+          "cause": "HTML estático",
+          "discovered_from": "https://www.entel.cl",
+          "first_try": {
+            "url": "https://www.entel.cl/beneficios",
+            "verdict": "sin_datos",
+            "cause": "la página carga pero no se detectan precios/beneficios"
+          }
+        }
+      ]
+    },
+    {
+      "id": "movistar",
+      "name": "Movistar",
+      "kind": "operador",
+      "readable": "partial",
+      "causes": "product: 404/not-found: la ruta de prueba no existe; promos: la página carga pero no se detectan precios/beneficios",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://catalogo.movistar.cl/equipomovil/",
+          "robots": "permitido",
+          "static": {
+            "status": 404,
+            "final_url": "https://catalogo.movistar.cl/equipomovil/",
+            "bytes": 141181,
+            "text_chars": 8433,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": true,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 9,
+            "samples": [],
+            "promo_pct_hits": 3,
+            "promo_word_hits": 3,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "url_invalida",
+          "cause": "404/not-found: la ruta de prueba no existe"
+        },
+        {
+          "probe": "promos",
+          "url": "https://ww2.movistar.cl/ofertas/convenios-corporativos/",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://ww2.movistar.cl/ofertas/convenios-corporativos/",
+            "bytes": 83755,
+            "text_chars": 8303,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://ww2.movistar.cl/ofertas/convenios-corporativos/",
+            "bytes": 107525,
+            "text_chars": 8309,
+            "waf": "captcha",
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "sin_datos",
+          "cause": "la página carga pero no se detectan precios/beneficios",
+          "discovered_from": "https://ww2.movistar.cl",
+          "first_try": {
+            "url": "https://ww2.movistar.cl/beneficios/",
+            "verdict": "url_invalida",
+            "cause": "404/not-found: la ruta de prueba no existe"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wom",
+      "name": "WOM",
+      "kind": "operador",
+      "readable": "partial",
+      "causes": "product: lee precios (con navegador) pero no apareció el producto de ejemplo; promos: HTML estático",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://store.wom.cl/equipos",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://store.wom.cl/equipos",
+            "bytes": 2863871,
+            "text_chars": 0,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "browser": {
+            "status": 200,
+            "final_url": "https://store.wom.cl/equipos/",
+            "bytes": 3621281,
+            "text_chars": 9315,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 54,
+            "samples": [],
+            "promo_pct_hits": 16,
+            "promo_word_hits": 20,
+            "has_data": false,
+            "generic_prices": true
+          },
+          "verdict": "precios_sin_muestra",
+          "cause": "lee precios (con navegador) pero no apareció el producto de ejemplo"
+        },
+        {
+          "probe": "promos",
+          "url": "https://www.wom.cl/beneficios/",
+          "robots": "permitido",
+          "static": {
+            "status": 200,
+            "final_url": "https://www.wom.cl/beneficios/",
+            "bytes": 153878,
+            "text_chars": 8647,
+            "waf": null,
+            "block": null,
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [
+              "dataLayer"
+            ],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 14,
+            "promo_word_hits": 38,
+            "has_data": true,
+            "generic_prices": false
+          },
+          "verdict": "ok",
+          "cause": "HTML estático"
+        }
+      ]
+    },
+    {
+      "id": "solotodo",
+      "name": "SoloTodo",
+      "kind": "comparador",
+      "readable": "partial",
+      "causes": "api: lee precios (HTML estático) pero no apareció el producto de ejemplo; product: robots.txt prohíbe la ruta; no se pidió",
+      "probes": [
+        {
+          "probe": "api",
+          "url": "https://publicapi.solotodo.com/products/?search=iphone%2015%20pro%20256&page_size=5",
+          "robots": "no_disponible",
+          "static": {
+            "status": 200,
+            "bytes": 43767,
+            "block": null,
+            "login": false,
+            "samples": [
+              {
+                "title": "Apple EarPods w/ Lightning Connector (MWTY3AM/A)",
+                "id": 256210
+              },
+              {
+                "title": "Apple iPhone 11 (256 GB / Black)",
+                "id": 66426
+              },
+              {
+                "title": "Apple iPhone 11 (256 GB / Green)",
+                "id": 67979
+              }
+            ],
+            "has_data": false,
+            "generic_prices": true
+          },
+          "verdict": "precios_sin_muestra",
+          "cause": "lee precios (HTML estático) pero no apareció el producto de ejemplo"
+        },
+        {
+          "probe": "product",
+          "url": "https://www.solotodo.cl/search?search=iphone%2015%20pro%20256",
+          "robots": "prohibido",
+          "verdict": "robots",
+          "cause": "robots.txt prohíbe la ruta; no se pidió"
+        }
+      ]
+    },
+    {
+      "id": "knasta",
+      "name": "Knasta",
+      "kind": "comparador",
+      "readable": "blocked",
+      "causes": "product: bloqueo/WAF (http_403, HTTP 403)",
+      "probes": [
+        {
+          "probe": "product",
+          "url": "https://knasta.cl/results?q=iphone%2015%20pro%20256gb",
+          "robots": "no_disponible",
+          "static": {
+            "status": 403,
+            "final_url": "https://knasta.cl/results?q=iphone%2015%20pro%20256gb",
+            "bytes": 520,
+            "text_chars": 15,
+            "waf": null,
+            "block": "http_403",
+            "login": false,
+            "not_found": false,
+            "jsonld_offers": [],
+            "embedded_state": [],
+            "clp_prices_in_text": 0,
+            "samples": [],
+            "promo_pct_hits": 0,
+            "promo_word_hits": 0,
+            "has_data": false,
+            "generic_prices": false
+          },
+          "verdict": "bloqueado",
+          "cause": "bloqueo/WAF (http_403, HTTP 403)"
+        }
+      ]
+    }
+  ]
+}

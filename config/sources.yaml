@@ -195,8 +195,8 @@ sources:
     base_url: https://www.cajalosandes.cl
     frequency: weekly
     trust_rank: 2
-    readable: unknown
-    readable_cause: "promos: 404/not-found: la ruta de prueba no existe"
+    readable: partial
+    readable_cause: "promos: la página carga pero no se detectan precios/beneficios"
     probes:
       promos: https://www.cajalosandes.cl/beneficios
 
