@@ -1,0 +1,23 @@
+{
+  "phase": "pilot",
+  "verified_at": "2026-10-18",
+  "product": "iPhone 15 Pro 256 GB",
+  "sources": [
+    {
+      "id": "falabella",
+      "mode": "product_html",
+      "commercial_verification": "pending"
+    },
+    {
+      "id": "hites",
+      "mode": "product_html",
+      "commercial_verification": "pending"
+    },
+    {
+      "id": "lider",
+      "mode": "product_html_partial",
+      "commercial_verification": "pending"
+    }
+  ],
+  "note": "Son fuentes técnicamente legibles en la auditoría de octubre. No implican precios actuales, stock confirmado ni permiso para alertas."
+}
