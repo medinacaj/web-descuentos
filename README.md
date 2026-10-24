@@ -33,3 +33,16 @@ Fuentes iniciales seleccionadas: Falabella y Hites (legibilidad técnica satisfa
 `core/verify.py` exige URL directa HTTPS del dominio permitido, iPhone 15 Pro **256 GB** sin variante Max, condición explícita (nuevo/reacondicionado/seminuevo), CLP, precio positivo, stock confirmado, evidencia textual y captura reciente (48 h). `core/pricing.py` compara cada condición por separado y descarta candidatos incompletos. Ejecutar `python -m tools.phase1 archivo.json` para validar un lote. Resultados quedan en `reports/candidates_checked.json` sin activar correos ni alertas.
 
 **Queda pendiente** un recolector real y autorizado por comercio, 10 fichas de productos con evidencias y validación final de precio/stock/condiciones. No declarar operativo el envío de alertas ni activar el cron diario sin superar esa aceptación. El mapa de fase 0 sigue siendo exploratorio.
+
+### Recolector (Issue #4)
+`python -m tools.collect` sigue búsqueda → fichas del modelo → JSON-LD de la ficha → `core/verify.py`. Workflow `collect.yml` (bajo demanda o al cambiar el recolector), sin correo ni base de datos; resultado como artefacto de 7 días.
+
+Reglas: condición desde el título (`NewCondition` de schema.org por sí solo no confirma "nuevo"; "grado A" es ambiguo), vendedor solo si viene en la oferta (nombres del estado embebido quedan como pista), omite capacidades distintas de 256 GB antes de pedir la ficha, se detiene ante 401/403/429 sin reintentos ni evasión.
+
+Resultado en GitHub Actions (24-10-2026):
+
+| Fuente | Estado | Causa |
+|---|---|---|
+| Lider | fichas legibles | 5 reacondicionados 256 GB aceptados; vendedor no informado en la oferta |
+| Falabella | fichas bloqueadas | búsqueda legible, ficha responde 403 desde GitHub Actions |
+| Hites | sin enlaces a fichas | el HTML estático de la búsqueda no contiene enlaces ni JSON-LD del modelo; requiere navegador (pendiente) |
