@@ -61,10 +61,13 @@ async def collect_source(client: PoliteClient, src: dict, max_items: int) -> tup
         captured = datetime.now(timezone.utc).isoformat(timespec="seconds")
         if p.error or p.status != 200:
             stats["errors"].append(f"ficha {link}: {p.error or 'HTTP ' + str(p.status)}")
+            if p.status in (401, 403, 429):
+                stats["errors"].append("fichas bloqueadas: se detiene esta tienda (sin reintentos ni evasión)")
+                break
             continue
         stats["fetched"] += 1
         rec = prod.parse_product(p.text, p.final_url, sid, captured)
-        if rec["extraction"] == "ninguna":
+        if rec["extraction"] == "ninguna" or not rec["seller"]:
             rec["diagnose"] = prod.diagnose(p.text)
         records.append(rec)
     return records, stats

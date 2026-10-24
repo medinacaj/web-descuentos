@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections import deque
 from urllib.parse import urljoin, urlsplit
 
 from selectolax.lexbor import LexborHTMLParser
@@ -18,6 +19,7 @@ PRODUCT_PATH = {
 }
 DOMAIN = {"falabella": "falabella.com", "hites": "hites.com", "lider": "lider.cl"}
 MODEL_RE = re.compile(r"iphone[\s\-_]*15[\s\-_]*pro(?![\s\-_]*max)", re.I)
+STORAGE_RE = re.compile(r"(?<![\d+])(128|256|512)[\s\-_]*gb|\b1[\s\-_]*tb\b", re.I)
 
 # Condición desde el título: tiene prioridad sobre schema.org porque algunos vendedores marcan
 # NewCondition en equipos reacondicionados. Términos ambiguos ("grado A", "open box") no confirman nada.
@@ -27,6 +29,7 @@ TITLE_CONDITION = [
     ("usado", re.compile(r"\busad[oa]\b|\bused\b", re.I)),
     ("exhibicion", re.compile(r"exhibici[oó]n|open[\s\-]?box", re.I)),
 ]
+NEW_RE = re.compile(r"\bnuevo\b|\bsellado\b|\bnew\b", re.I)
 AMBIGUOUS_RE = re.compile(r"\bgrad[eo]\s*[a-c]\b|\bclase\s*[a-c]\b|\bcpo\b", re.I)
 SCHEMA_CONDITION = {
     "newcondition": "nuevo",
@@ -60,9 +63,10 @@ def _json_scripts(tree: LexborHTMLParser) -> tuple[list, object | None]:
 
 
 def _walk(obj):
-    stack = [obj]
+    """Recorrido en anchura: conserva el orden de aparición."""
+    stack = deque([obj])
     while stack:
-        d = stack.pop()
+        d = stack.popleft()
         if isinstance(d, dict):
             yield d
             stack.extend(d.values())
@@ -90,6 +94,7 @@ def product_links(html: str, page_url: str, source_id: str, limit: int = 8) -> l
             if isinstance(url, str) and isinstance(name, str):
                 cands.append((url, name))
     out: list[str] = []
+    seen: set[str] = set()
     for href, label in cands:
         url = urljoin(page_url, href.strip()).split("#")[0]
         parts = urlsplit(url)
@@ -99,15 +104,27 @@ def product_links(html: str, page_url: str, source_id: str, limit: int = 8) -> l
         known = bool(PRODUCT_PATH[source_id].search(path))
         slug_model = MODEL_RE.search(path.replace("/", " "))
         label_model = MODEL_RE.search(label)
-        if re.search(r"pro[\s\-_]*max", path + " " + label, re.I):
+        text = path + " " + label
+        if re.search(r"pro[\s\-_]*max", text, re.I):
             continue
+        storages = {re.sub(r"[\s\-_]", "", m.group(0).lower()) for m in STORAGE_RE.finditer(text)}
+        if storages and storages != {"256gb"}:
+            continue  # otra capacidad: no se pide la ficha
         if (known and (label_model or slug_model)) or (slug_model and re.search(r"\d{6,}", path)):
             clean = parts._replace(fragment="").geturl()
-            if clean not in out:
+            key = product_key(clean)
+            if key not in seen:
+                seen.add(key)
                 out.append(clean)
         if len(out) >= limit:
             break
     return out
+
+
+def product_key(url: str) -> str:
+    """Identificador de ficha: Falabella repite la misma ficha con y sin SKU al final."""
+    m = re.search(r"/product/(\d+)", url)
+    return m.group(1) if m else urlsplit(url)._replace(query="").geturl()
 
 
 # ----------------------------------------------------------------------------- ficha
@@ -115,9 +132,14 @@ def condition_from(title: str, schema_value) -> tuple[str | None, str]:
     for cond, rx in TITLE_CONDITION:
         if rx.search(title):
             return cond, "título"
+    if NEW_RE.search(title):
+        return "nuevo", "título"
     if AMBIGUOUS_RE.search(title):
         return None, "título ambiguo (grado/clase sin condición explícita)"
     mapped = SCHEMA_CONDITION.get(_tail(schema_value))
+    if mapped == "nuevo":
+        # NewCondition es el valor por omisión de muchas plataformas; sin texto que lo diga no prueba nada.
+        return None, "solo schema.org NewCondition, sin 'nuevo' en el título"
     if mapped:
         return mapped, "schema.org itemCondition"
     return None, "sin condición explícita"
@@ -140,7 +162,7 @@ def _price_int(v) -> int | None:
 def parse_product(html: str, url: str, source_id: str, captured_at: str) -> dict:
     """Registro en el formato de core/verify.py, más `notes` con lo que faltó."""
     tree = LexborHTMLParser(html or "")
-    lds, _state = _json_scripts(tree)
+    lds, state = _json_scripts(tree)
     product = next((d for blob in lds for d in _walk(blob) if _is_type(d, "Product")), None)
     rec = {"source_id": source_id, "url": url, "title": None, "condition": None, "currency": None,
            "price_clp": None, "in_stock": None, "seller": None, "price_evidence": None,
@@ -174,6 +196,13 @@ def parse_product(html: str, url: str, source_id: str, captured_at: str) -> dict
     rec["in_stock"] = AVAILABILITY.get(_tail(offer.get("availability")))
     seller = offer.get("seller")
     rec["seller"] = (seller.get("name") if isinstance(seller, dict) else seller) or None
+    if not rec["seller"] and state:
+        names = state_sellers(state)
+        if len(names) == 1:
+            rec["seller"] = names.pop()
+            rec["notes"].append("vendedor desde el estado embebido")
+        elif names:
+            rec["notes"].append(f"varios vendedores en la página: {sorted(names)[:5]}")
     rec["condition"], how = condition_from(rec["title"] or "", offer.get("itemCondition") or product.get("itemCondition"))
     rec["notes"].append(f"condición: {how}")
     if rec["in_stock"] is None:
@@ -182,6 +211,14 @@ def parse_product(html: str, url: str, source_id: str, captured_at: str) -> dict
                              f"availability={_tail(offer.get('availability')) or None} "
                              f"itemCondition={_tail(offer.get('itemCondition')) or None} seller={rec['seller']!r}")
     return rec
+
+
+SELLER_KEYS = ("sellerName", "sellerDisplayName", "sellerNameDisplay", "soldBy", "vendedor")
+
+
+def state_sellers(state) -> set[str]:
+    return {v.strip() for d in _walk(state) for k, v in d.items()
+            if k in SELLER_KEYS and isinstance(v, str) and v.strip()}
 
 
 def diagnose(html: str) -> dict:
@@ -195,5 +232,9 @@ def diagnose(html: str) -> dict:
             for k, v in d.items():
                 if "price" in k.lower() and isinstance(v, (int, float, str, list, dict)):
                     price_keys.add(k)
+    ld_urls = [d.get("url") for blob in lds for d in _walk(blob) if _is_type(d, "Product") and d.get("url")]
+    model_hrefs = [a.attributes.get("href") for a in tree.css("a[href]") if MODEL_RE.search(a.text() or "")]
+    seller_keys = sorted({k for d in _walk(state) for k in d if "seller" in k.lower()}) if state else []
     return {"jsonld_types": types, "next_data": state is not None, "next_price_keys": sorted(price_keys)[:20],
-            "anchors": len(tree.css("a[href]"))}
+            "seller_keys": seller_keys[:10], "anchors": len(tree.css("a[href]")),
+            "jsonld_product_urls": ld_urls[:5], "model_anchor_hrefs": model_hrefs[:5]}

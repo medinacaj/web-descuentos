@@ -86,3 +86,39 @@ def test_price_parsing():
     assert prod._price_int(849990.0) == 849990
     assert prod._price_int("849990.00") == 849990
     assert prod._price_int(True) is None and prod._price_int("0") is None
+
+
+def test_links_skip_other_storage_and_dedupe_falabella_sku():
+    state = {"results": [
+        {"displayName": "Apple iPhone 15 Pro 1TB Blanco Reacondicionado", "url": "https://www.falabella.com/falabella-cl/product/155665968/apple-iphone-15-pro-1tb"},
+        {"displayName": "Apple iPhone 15 Pro 128GB", "url": "https://www.falabella.com/falabella-cl/product/127011635/apple-iphone-15-pro-128gb"},
+        {"displayName": "iPhone 15 Pro 256GB Reacondicionado", "url": "https://www.falabella.com/falabella-cl/product/111111/iphone-15-pro-256gb"},
+        {"displayName": "iPhone 15 Pro 256GB Reacondicionado", "url": "https://www.falabella.com/falabella-cl/product/111111/iphone-15-pro-256gb/111112"},
+        {"displayName": "IPHONE 15 PRO 5G 8+256GB REACONDICIONADO", "url": "https://www.falabella.com/falabella-cl/product/222222/iphone-15-pro-8-256gb"}]}
+    html = f'<script id="__NEXT_DATA__" type="application/json">{json.dumps(state)}</script>'
+    assert prod.product_links(html, "https://www.falabella.com/falabella-cl/search", "falabella") == [
+        "https://www.falabella.com/falabella-cl/product/111111/iphone-15-pro-256gb",
+        "https://www.falabella.com/falabella-cl/product/222222/iphone-15-pro-8-256gb"]
+
+
+def test_schema_new_condition_alone_is_not_enough():
+    rec = prod.parse_product(page(ld(product(name="Apple iPhone 15 Pro 256GB Titanio Natural",
+                                             offers=offer(itemCondition="https://schema.org/NewCondition")))),
+                             "https://www.lider.cl/ip/x/00046059090375", "lider", CAPTURED)
+    assert rec["condition"] is None
+    rec = prod.parse_product(page(ld(product(name="Apple iPhone 15 Pro 256GB Nuevo Sellado"))),
+                             "https://www.lider.cl/ip/x/00046059090375", "lider", CAPTURED)
+    assert rec["condition"] == "nuevo"
+
+
+def test_seller_from_embedded_state_only_when_unique():
+    state = {"props": {"product": {"sellerName": "Tienda X"}}}
+    nd = f'<script id="__NEXT_DATA__" type="application/json">{json.dumps(state)}</script>'
+    no_seller = offer()
+    no_seller.pop("seller")
+    rec = prod.parse_product(page(ld(product(offers=no_seller)), nd), "https://www.lider.cl/ip/x/1", "lider", CAPTURED)
+    assert rec["seller"] == "Tienda X"
+    state["props"]["other"] = {"sellerName": "Tienda Y"}
+    nd = f'<script id="__NEXT_DATA__" type="application/json">{json.dumps(state)}</script>'
+    rec = prod.parse_product(page(ld(product(offers=no_seller)), nd), "https://www.lider.cl/ip/x/1", "lider", CAPTURED)
+    assert rec["seller"] is None
