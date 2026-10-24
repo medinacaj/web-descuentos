@@ -197,12 +197,10 @@ def parse_product(html: str, url: str, source_id: str, captured_at: str) -> dict
     seller = offer.get("seller")
     rec["seller"] = (seller.get("name") if isinstance(seller, dict) else seller) or None
     if not rec["seller"] and state:
+        # El estado embebido mezcla vendedores de otras ofertas y carruseles: solo es pista, nunca el vendedor.
         names = state_sellers(state)
-        if len(names) == 1:
-            rec["seller"] = names.pop()
-            rec["notes"].append("vendedor desde el estado embebido")
-        elif names:
-            rec["notes"].append(f"varios vendedores en la página: {sorted(names)[:5]}")
+        if names:
+            rec["notes"].append(f"vendedor no informado en la oferta; nombres en la página (pista): {sorted(names)[:5]}")
     rec["condition"], how = condition_from(rec["title"] or "", offer.get("itemCondition") or product.get("itemCondition"))
     rec["notes"].append(f"condición: {how}")
     if rec["in_stock"] is None:
@@ -233,7 +231,8 @@ def diagnose(html: str) -> dict:
                 if "price" in k.lower() and isinstance(v, (int, float, str, list, dict)):
                     price_keys.add(k)
     ld_urls = [d.get("url") for blob in lds for d in _walk(blob) if _is_type(d, "Product") and d.get("url")]
-    model_hrefs = [a.attributes.get("href") for a in tree.css("a[href]") if MODEL_RE.search(a.text() or "")]
+    model_hrefs = [a.attributes.get("href") for a in tree.css("a[href]")
+                   if MODEL_RE.search(a.text() or "") or "iphone" in (a.attributes.get("href") or "").lower()]
     seller_keys = sorted({k for d in _walk(state) for k in d if "seller" in k.lower()}) if state else []
     return {"jsonld_types": types, "next_data": state is not None, "next_price_keys": sorted(price_keys)[:20],
             "seller_keys": seller_keys[:10], "anchors": len(tree.css("a[href]")),

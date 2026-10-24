@@ -111,14 +111,10 @@ def test_schema_new_condition_alone_is_not_enough():
     assert rec["condition"] == "nuevo"
 
 
-def test_seller_from_embedded_state_only_when_unique():
+def test_embedded_state_seller_is_only_a_hint():
     state = {"props": {"product": {"sellerName": "Tienda X"}}}
     nd = f'<script id="__NEXT_DATA__" type="application/json">{json.dumps(state)}</script>'
     no_seller = offer()
     no_seller.pop("seller")
     rec = prod.parse_product(page(ld(product(offers=no_seller)), nd), "https://www.lider.cl/ip/x/1", "lider", CAPTURED)
-    assert rec["seller"] == "Tienda X"
-    state["props"]["other"] = {"sellerName": "Tienda Y"}
-    nd = f'<script id="__NEXT_DATA__" type="application/json">{json.dumps(state)}</script>'
-    rec = prod.parse_product(page(ld(product(offers=no_seller)), nd), "https://www.lider.cl/ip/x/1", "lider", CAPTURED)
-    assert rec["seller"] is None
+    assert rec["seller"] is None and any("pista" in n for n in rec["notes"])
