@@ -232,8 +232,11 @@ def diagnose(html: str) -> dict:
                     price_keys.add(k)
     ld_urls = [d.get("url") for blob in lds for d in _walk(blob) if _is_type(d, "Product") and d.get("url")]
     model_hrefs = [a.attributes.get("href") for a in tree.css("a[href]")
-                   if MODEL_RE.search(a.text() or "") or "iphone" in (a.attributes.get("href") or "").lower()]
+                   if MODEL_RE.search(a.text() or "") or re.search(r"iphone[\-_]?15", a.attributes.get("href") or "", re.I)]
+    ld_model_keys = sorted({k for blob in lds for d in _walk(blob)
+                            if _is_type(d, "Product") and MODEL_RE.search(str(d.get("name") or "")) for k in d})
     seller_keys = sorted({k for d in _walk(state) for k in d if "seller" in k.lower()}) if state else []
     return {"jsonld_types": types, "next_data": state is not None, "next_price_keys": sorted(price_keys)[:20],
             "seller_keys": seller_keys[:10], "anchors": len(tree.css("a[href]")),
-            "jsonld_product_urls": ld_urls[:5], "model_anchor_hrefs": model_hrefs[:5]}
+            "jsonld_product_urls": ld_urls[:5], "model_anchor_hrefs": model_hrefs[:5],
+            "jsonld_model_product_keys": ld_model_keys}
