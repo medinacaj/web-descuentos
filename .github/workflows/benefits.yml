@@ -27,7 +27,9 @@ jobs:
       - run: python -m pytest -q tests/test_benefits.py
       - run: python -m playwright install --with-deps chromium
       - name: Recolectar beneficios
-        run: python -m tools.collect_benefits
+        run: python -m tools.collect_benefits --site-out reports/beneficios_sitio.json
+      - name: Datos para el sitio (entre marcas, para copiarlos sin descargar el artefacto)
+        run: echo "<<<BENEFICIOS" && cat reports/beneficios_sitio.json && echo "BENEFICIOS>>>"
       - uses: actions/upload-artifact@v4
         with:
           name: benefits

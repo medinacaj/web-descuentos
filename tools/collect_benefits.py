@@ -119,6 +119,7 @@ def main() -> None:
     ap.add_argument("--only")
     ap.add_argument("--no-browser", action="store_true")
     ap.add_argument("--out", default="reports/benefits.json")
+    ap.add_argument("--site-out", help="JSON compacto para web/data/beneficios.json (se imprime entre marcas)")
     a = ap.parse_args()
     today = datetime.now(ZoneInfo("America/Santiago")).date()
     benefits, stats = asyncio.run(run(set(a.only.split(",")) if a.only else None, not a.no_browser, today))
@@ -126,6 +127,11 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"checked_on": today.isoformat(), "benefits": benefits, "stats": stats},
                               ensure_ascii=False, indent=2, default=str) + "\n", encoding="utf8")
+    if a.site_out:
+        keep = ("issuer", "merchant", "merchant_from", "percent", "cap", "min_purchase", "weekdays", "valid_to", "channel",
+                "card_type", "stackable", "is_cashback", "status", "status_reasons", "source_url", "terms_url")
+        site = {"checked_on": today.isoformat(), "benefits": [{k: b.get(k) for k in keep} for b in benefits]}
+        Path(a.site_out).write_text(json.dumps(site, ensure_ascii=False, default=str) + "\n", encoding="utf8")
     md = summary(benefits, stats)
     if p := os.environ.get("GITHUB_STEP_SUMMARY"):
         Path(p).write_text(md)
