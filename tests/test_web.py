@@ -66,3 +66,14 @@ def test_prices_come_only_from_data(tmp_path):
     allowed = {"$" + f"{o['precio']:,}".replace(",", ".") for p in data["productos"] for o in p["ofertas"]}
     for h in pages(build(tmp_path)).values():
         assert set(re.findall(r"\$\d{1,3}(?:\.\d{3})+", h)) <= allowed
+
+
+def test_only_confirmed_benefits_are_listed(tmp_path):
+    data = json.loads((REPO / "web" / "data" / "beneficios.json").read_text())
+    hs = pages(build(tmp_path, "--hoy", "2026-10-30"))  # viernes
+    ben = next(h for p, h in hs.items() if p.parent.name == "beneficios")
+    for b in data["benefits"]:
+        if b["merchant"] and b["status"] != "confirmado":
+            assert f'class="comercio">{b["merchant"]}<' not in ben, b["merchant"]
+    home = (tmp_path / "out" / "index.html").read_text(encoding="utf8")
+    assert 'class="comercio">Güeros<' in home  # 40% los viernes en BCI

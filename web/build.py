@@ -25,6 +25,7 @@ NOMBRE = "Ahorro Real"  # nombre provisional; no verificado como marca ni domini
 PLACEHOLDER_URL = "https://ahorroreal.example"
 TZ = ZoneInfo("America/Santiago")
 DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+DIAS_PLURAL = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábados", "domingos"]
 DIAS_CORTOS = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"]
 
 e = html.escape
@@ -262,7 +263,7 @@ def build(site: Site, ofertas: dict, ben: dict | None, recon: dict) -> None:
     elif hoy_b:
         hoy_html = '<div class="lista">' + "".join(fila_beneficio(b, site, "/") for b in hoy_b[:8]) + "</div>"
     else:
-        hoy_html = f'<p class="vacio">Ningún beneficio confirmado aplica a los {DIAS[hoy_n - 1].lower()}. Revisa la semana completa.</p>'
+        hoy_html = f'<p class="vacio">Ningún beneficio confirmado aplica los {DIAS_PLURAL[hoy_n - 1]}. Revisa la semana completa.</p>'
     fuente_txt = (f'{len(conf)} beneficios confirmados de {len(bs)} leídos en {", ".join(emisores)}, el {ben_fecha}.'
                   if bs else "Sin datos de beneficios todavía.")
     pasos = [("Leemos la fuente oficial", "Páginas de bancos, billeteras y tiendas, respetando sus reglas de acceso y sin forzar bloqueos."),

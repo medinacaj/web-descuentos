@@ -1,6 +1,6 @@
 # Ahorro Real — sitio público (prototipo, nombre provisional)
 
-Sitio estático generado por `web/build.py` desde datos del sistema: `web/data/ofertas.json` (salida del recolector, PR #7) y el último `reports/recon_*.json`. Ningún precio se escribe a mano; `tests/test_web.py` falla si aparece un precio que no está en los datos.
+Sitio estático generado por `web/build.py` desde datos del sistema: `web/data/ofertas.json` (recolector de fichas, PR #7), `web/data/beneficios.json` (recolector de beneficios, PR #13; copia literal de `--site-out`) y el último `reports/recon_*.json`. La portada responde "¿con qué tarjeta conviene pagar hoy?" con los beneficios confirmados del día. Ningún precio se escribe a mano; `tests/test_web.py` falla si aparece un precio que no está en los datos.
 
 ```
 python web/build.py                                    # prototipo → web/dist (noindex, robots bloqueado)
