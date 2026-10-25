@@ -17,3 +17,5 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m unittest tests.test_phase1 -v
+      - name: Validar filtros manuales de reconocimiento
+        run: python -m unittest tests.test_recon_cli -v
