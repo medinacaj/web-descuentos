@@ -53,11 +53,11 @@ def test_public_mode_seo(tmp_path):
 def test_internal_links_resolve(tmp_path):
     out = build(tmp_path, "--modo", "publico", env={"SITE_BASE_URL": "https://dominio.cl"})
     for h in pages(out).values():
-        for href in re.findall(r'href="(/[^"]*)"', h):
+        for href in re.findall(r'href="(/[^"#]*)', h):
             assert (out / href.strip("/") / "index.html").exists() or href == "/", href
     prev = build(tmp_path / "p", "--preview")
     for p, h in pages(prev).items():
-        for href in re.findall(r'href="([^":]+\.html)"', h):
+        for href in re.findall(r'href="([^":#]+\.html)', h):
             assert (p.parent / href).resolve().exists(), (p, href)
 
 
