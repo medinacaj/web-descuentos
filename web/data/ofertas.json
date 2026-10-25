@@ -1,0 +1,42 @@
+{
+  "_fuente": "Recolector fase 1 (PR #7), corrida de GitHub Actions 40087823498 sobre el commit 778896d. Solo fichas aceptadas por core/verify.py.",
+  "comprobado": "2026-10-24T10:56:32Z",
+  "muestra": true,
+  "productos": [
+    {
+      "slug": "iphone-15-pro-256gb",
+      "nombre": "iPhone 15 Pro 256 GB",
+      "marca": "Apple",
+      "categoria": "Smartphones",
+      "regla_variante": "Solo 256 GB. Se excluyen Pro Max, 128 GB, 512 GB y 1 TB.",
+      "ofertas": [
+        {"condicion": "reacondicionado", "tienda": "Lider", "vendedor": null, "precio": 697990,
+         "titulo": "Apple iPhone 15 Pro 256GB Titanio Natural - Reacondicionado",
+         "url": "https://www.lider.cl/ip/marcas-destacadas/apple-iphone-15-pro-256gb-titanio-natural-reacondicionado/00078495671471"},
+        {"condicion": "reacondicionado", "tienda": "Lider", "vendedor": null, "precio": 697990,
+         "titulo": "Apple iPhone 15 Pro 256GB Titanio Negro - Reacondicionado",
+         "url": "https://www.lider.cl/ip/marcas-destacadas/apple-iphone-15-pro-256gb-titanio-negro-reacondicionado/00078495671469"},
+        {"condicion": "reacondicionado", "tienda": "Lider", "vendedor": null, "precio": 697990,
+         "titulo": "Iphone 15 Pro Restaurado - Completamente Desbloqueado - 256 Gb Titanio Natural (reacondicionado)",
+         "url": "https://www.lider.cl/ip/todo-iphone/iphone-15-pro-restaurado-completamente-desbloqueado-256-gb-titanio-natural-reacondicionado-/00078495671123"},
+        {"condicion": "reacondicionado", "tienda": "Lider", "vendedor": null, "precio": 727990,
+         "titulo": "Iphone 15 Pro 256gb Natural Titanium Reacondicionado",
+         "url": "https://www.lider.cl/ip/todo-iphone/iphone-15-pro-256gb-natural-titanium-reacondicionado/00075357599471"},
+        {"condicion": "reacondicionado", "tienda": "Lider", "vendedor": null, "precio": 914990,
+         "titulo": "Apple iPhone 15 Pro 256GB Titanio Natural - Reacondicionado",
+         "url": "https://www.lider.cl/ip/marcas-destacadas/apple-iphone-15-pro-256gb-titanio-natural-reacondicionado/00078495672903"}
+      ],
+      "descartadas": [
+        {"motivo": "Marcadas como nuevas solo en los datos internos de la página; el título no lo dice", "cantidad": 3, "tienda": "Lider"},
+        {"motivo": "Otra capacidad (128 GB, 512 GB o 1 TB): no se compara contra 256 GB", "cantidad": null, "tienda": "Lider y Falabella"},
+        {"motivo": "Ficha bloqueada (HTTP 403): no se pudo leer precio ni stock", "cantidad": null, "tienda": "Falabella"},
+        {"motivo": "La búsqueda no expone fichas sin navegador", "cantidad": null, "tienda": "Hites"}
+      ],
+      "estado_tiendas": [
+        {"tienda": "Lider", "estado": "legible", "detalle": "8 fichas leídas, 5 aceptadas"},
+        {"tienda": "Falabella", "estado": "bloqueada", "detalle": "la ficha responde 403"},
+        {"tienda": "Hites", "estado": "pendiente", "detalle": "requiere navegador"}
+      ]
+    }
+  ]
+}
