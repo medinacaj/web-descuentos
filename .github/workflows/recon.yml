@@ -32,7 +32,9 @@ jobs:
       - run: python -m pytest -q
       - run: python -m playwright install --with-deps chromium
       - name: Reconocimiento
-        run: python -m tools.recon --write-sources ${{ inputs.only && format('--only {0}', inputs.only) || '' }}
+        env:
+          RECON_ONLY: ${{ inputs.only || '' }}
+        run: python -m tools.recon_cli
       - uses: actions/upload-artifact@v4
         with:
           name: recon-report
