@@ -35,7 +35,7 @@ LUCAS_RE = re.compile(r"tope[^\d]{0,20}(\d{1,3})\s*lucas", re.I)
 UPTO_RE = re.compile(r"hasta\s+(?:un\s+)?\d{1,2}\s?%", re.I)
 CASHBACK_RE = re.compile(r"devoluci[óo]n|cashback|reembolso", re.I)
 # "40% de descuento en PapaJohns online…" → "PapaJohns". Solo nombres que empiezan con mayúscula.
-MERCHANT_TXT_RE = re.compile(r"(?:descuento|dcto\.?|devoluci[óo]n|off)\s+en\s+((?:[A-ZÁÉÍÓÚÑ0-9][\w'&.\-]*)(?:\s+[A-ZÁÉÍÓÚÑ0-9][\w'&.\-]*){0,3})")
+MERCHANT_TXT_RE = re.compile(r"(?i:descuento|dcto\.?|devoluci[óo]n|off)\s+(?i:en)\s+((?:[A-ZÁÉÍÓÚÑ0-9][\w'&.\-]*)(?:\s+[A-ZÁÉÍÓÚÑ0-9][\w'&.\-]*){0,3})")
 
 
 def _clp(s: str) -> int:
@@ -182,7 +182,7 @@ def extract(html: str, page_url: str, issuer: str, today: date) -> list[dict]:
         b["merchant"] = blk["merchant"]
         if not b["merchant"]:
             m = MERCHANT_TXT_RE.search(b["text"])
-            b["merchant"] = m.group(1).strip(" .") if m else None
+            b["merchant"] = clean_merchant(m.group(1)) if m else None
             b["merchant_from"] = "texto" if m else None
         else:
             b["merchant_from"] = "título"

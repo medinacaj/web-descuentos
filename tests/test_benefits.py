@@ -91,3 +91,9 @@ def test_rates_are_not_discounts_and_merchant_cleanup():
     assert bn.PCT_RE.findall("tasa desde 0,85% y Supertasa de 3,99%") == []
     assert bn.clean_merchant("App McDonald's Aprovecha 40") == "App McDonald's"
     assert bn.clean_merchant("Güeros") == "Güeros"
+
+
+def test_merchant_text_cleanup_and_case():
+    html = ('<div class="swiper-slide"><p>30% de descuento en Starbucks Aprovecha 30% de descuento en compras presenciales</p></div>'
+            '<div class="swiper-slide"><p>25% Dcto en Papa Johns</p></div>')
+    assert sorted(b["merchant"] for b in bn.extract(html, "https://x.cl", "Tenpo", TODAY)) == ["Papa Johns", "Starbucks"]
