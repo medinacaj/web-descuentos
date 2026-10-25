@@ -1,4 +1,4 @@
-"""Genera el sitio estático SaveMoneyCL desde los datos del sistema (no se escriben precios a mano).
+"""Genera el sitio estático Ahorro Real desde los datos del sistema (no se escriben precios a mano).
 
   python web/build.py                       # prototipo: noindex + robots bloqueado, en site/dist
   python web/build.py --modo publico       # producción: indexable, sitemap.xml (exige SITE_BASE_URL)
@@ -17,8 +17,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parent
-NOMBRE = "SaveMoneyCL"
-PLACEHOLDER_URL = "https://savemoneycl.example"
+NOMBRE = "Ahorro Real"  # nombre provisional; no verificado como marca ni dominio
+PLACEHOLDER_URL = "https://ahorroreal.example"
 
 e = html.escape
 
@@ -160,7 +160,7 @@ class Site:
             lis = "".join(f'<li><a href="{self.href(path, p)}">{e(n)}</a></li>' if p != path else f'<li aria-current="page">{e(n)}</li>'
                           for p, n in pg["crumbs"])
             crumbs = f'<nav class="migas" aria-label="Ruta"><ol>{lis}</ol></nav>'
-        body = (f'{aviso}<header class="top"><div class="wrap"><a class="marca" href="{self.href(path, "/")}">SaveMoney<span>CL</span></a>'
+        body = (f'{aviso}<header class="top"><div class="wrap"><a class="marca" href="{self.href(path, "/")}">Ahorro<span>Real</span></a>'
                 f'{self.nav(path)}</div></header>'
                 f'<main><div class="wrap">{crumbs}{pg["body"]}</div></main>'
                 f'<footer><div class="wrap"><p>{NOMBRE} compara precios publicados por tiendas chilenas y no vende productos. '
@@ -281,7 +281,7 @@ def build(site: Site, data: dict, recon: dict) -> None:
     clases = [("Sobresaliente", "20% o más bajo la referencia real"), ("Buena", "entre 10% y 19,9%"), ("Descuento menor", "entre 1% y 9,9%"),
               ("Sin ahorro real", "igual o sobre el mercado"), ("Dudosa", "referencia inflada, condiciones poco claras o información insuficiente")]
     site.add("/como-funciona/", f"Cómo calculamos el ahorro real · {NOMBRE}",
-             "Reglas de verificación de SaveMoneyCL: precio final pagadero, referencia real, variantes bloqueadas, "
+             "Reglas de verificación de Ahorro Real: precio final pagadero, referencia real, variantes bloqueadas, "
              "cupones confirmados y clasificación de ofertas.",
              f'''<section class="stack"><p class="eyebrow">Método</p><h1>Cómo calculamos el ahorro real</h1>
   <p class="lead">No buscamos el descuento más llamativo, sino la compra más conveniente, verificable y segura.</p></section>
@@ -301,7 +301,7 @@ def build(site: Site, data: dict, recon: dict) -> None:
     n = len(recon["sources"])
     nok = sum(s["readable"] == "ok" for s in recon["sources"])
     site.add("/fuentes/", f"Fuentes revisadas en Chile · {NOMBRE}",
-             f"Las {n} tiendas, bancos, billeteras, operadores y comparadores chilenos que revisa SaveMoneyCL y cuáles se pueden leer.",
+             f"Las {n} tiendas, bancos, billeteras, operadores y comparadores chilenos que revisa Ahorro Real y cuáles se pueden leer.",
              f'''<section class="stack"><p class="eyebrow">Transparencia</p><h1>Fuentes revisadas</h1>
   <p class="lead">Revisamos {n} fuentes; {nok} se leen completas. Las que bloquean el acceso automático quedan fuera: no intentamos saltarnos esos bloqueos.</p>
   <p>Mapa del {fecha(recon["checked_at"])}. "Legible" se refiere a la página de búsqueda o de beneficios; la ficha de producto puede comportarse distinto (ver el seguimiento).</p></section>

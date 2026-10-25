@@ -1,4 +1,4 @@
-# SaveMoneyCL — sitio público (prototipo)
+# Ahorro Real — sitio público (prototipo, nombre provisional)
 
 Sitio estático generado por `web/build.py` desde datos del sistema: `web/data/ofertas.json` (salida del recolector, PR #7) y el último `reports/recon_*.json`. Ningún precio se escribe a mano; `tests/test_web.py` falla si aparece un precio que no está en los datos.
 

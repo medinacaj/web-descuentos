@@ -1,4 +1,4 @@
-name: Sitio SaveMoneyCL
+name: Sitio Ahorro Real
 on:
   pull_request:
     paths: ['web/**', 'tests/test_web.py', '.github/workflows/web-tests.yml']
