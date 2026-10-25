@@ -30,7 +30,12 @@ CARD_TYPE = [("credito", re.compile(r"cr[ée]dito", re.I)), ("debito", re.compil
              ("prepago", re.compile(r"prepago", re.I))]
 STACK_NO = re.compile(r"no\s+(?:es\s+)?acumulable|no\s+se\s+acumula|no\s+aplica\s+con\s+otras", re.I)
 STACK_YES = re.compile(r"(?<!no )acumulable con", re.I)
-CONTAINER_HINT = re.compile(r"benef|promo|descuento|card|tarjeta|offer|item", re.I)
+CONTAINER_HINT = re.compile(r"benef|promo|descuento|card|tarjeta|offer|item|slide|swiper|carr?ousel", re.I)
+LUCAS_RE = re.compile(r"tope[^\d]{0,20}(\d{1,3})\s*lucas", re.I)
+UPTO_RE = re.compile(r"hasta\s+(?:un\s+)?\d{1,2}\s?%", re.I)
+CASHBACK_RE = re.compile(r"devoluci[óo]n|cashback|reembolso", re.I)
+# "40% de descuento en PapaJohns online…" → "PapaJohns". Solo nombres que empiezan con mayúscula.
+MERCHANT_TXT_RE = re.compile(r"(?:descuento|dcto\.?|devoluci[óo]n|off)\s+en\s+((?:[A-ZÁÉÍÓÚÑ0-9][\w'&.\-]*)(?:\s+[A-ZÁÉÍÓÚÑ0-9][\w'&.\-]*){0,3})")
 
 
 def _clp(s: str) -> int:
@@ -78,6 +83,7 @@ def parse_benefit(text: str, issuer: str, source_url: str, terms_url: str | None
     t = re.sub(r"\s+", " ", text).strip()
     pcts = [int(x) for x in PCT_RE.findall(t)]
     cap = CAP_RE.search(t)
+    lucas = LUCAS_RE.search(t)
     mn = MIN_RE.search(t)
     stack = False if STACK_NO.search(t) else (True if STACK_YES.search(t) else None)
     b = {
@@ -85,7 +91,9 @@ def parse_benefit(text: str, issuer: str, source_url: str, terms_url: str | None
         "merchant": None,
         "percent": max(pcts) if pcts else None,
         "percent_note": "varios porcentajes en el texto; se usa el mayor" if len(set(pcts)) > 1 else None,
-        "cap": _clp(cap.group(1)) if cap else None,
+        "cap": _clp(cap.group(1)) if cap else (int(lucas.group(1)) * 1000 if lucas else None),
+        "percent_is_max": bool(UPTO_RE.search(t)),
+        "is_cashback": bool(CASHBACK_RE.search(t)),
         "min_purchase": _clp(mn.group(1)) if mn else None,
         "weekdays": _days(t),
         "valid_to": _valid_to(t, today),
@@ -106,6 +114,8 @@ def status_for(b: dict, today: date) -> tuple[str, list[str]]:
     missing = []
     if b["percent"] is None:
         missing.append("sin porcentaje")
+    elif b.get("percent_is_max"):
+        missing.append("porcentaje variable ('hasta')")
     if not b["merchant"]:
         missing.append("sin comercio identificado")
     if b["valid_to"] is None and b["weekdays"] is None:
@@ -118,18 +128,21 @@ def benefit_blocks(html: str, page_url: str) -> list[dict]:
     tree = LexborHTMLParser(html or "")
     for tag in tree.css("script, style, noscript, template, header, footer, nav"):
         tag.decompose()
+    def qualifies(node) -> bool:
+        cls = (node.attributes.get("class") or "") + " " + (node.attributes.get("id") or "")
+        text = node.text(separator=" ", strip=True) or ""
+        if not (20 <= len(text) <= 500) or not PCT_RE.search(text):
+            return False
+        return node.tag != "div" or bool(CONTAINER_HINT.search(cls))
+
     out, seen = [], set()
     for node in tree.css("article, li, div, section, a"):
-        cls = (node.attributes.get("class") or "") + " " + (node.attributes.get("id") or "")
+        if not qualifies(node):
+            continue
+        # el bloque más interno que cumple: si un descendiente ya cumple, se prefiere ese
+        if any(c.mem_id != node.mem_id and qualifies(c) for c in node.css("article, li, div, section, a")):
+            continue
         text = node.text(separator=" ", strip=True)
-        if not (20 <= len(text) <= 500) or not PCT_RE.search(text):
-            continue
-        if node.tag == "div" and not CONTAINER_HINT.search(cls):
-            continue
-        # el bloque más interno que cumple: si un hijo ya lo cumple, se prefiere el hijo
-        if any(PCT_RE.search(c.text(separator=" ", strip=True) or "") and len(c.text(strip=True)) >= 20
-               for c in node.iter() if c.tag in ("article", "li", "div", "section", "a")):
-            continue
         key = re.sub(r"\W+", "", text.lower())[:160]
         if key in seen:
             continue
@@ -156,6 +169,14 @@ def extract(html: str, page_url: str, issuer: str, today: date) -> list[dict]:
     for blk in benefit_blocks(html, page_url):
         b = parse_benefit(blk["text"], issuer, blk["link"] or page_url, blk["terms"], today)
         b["merchant"] = blk["merchant"]
+        if not b["merchant"]:
+            m = MERCHANT_TXT_RE.search(b["text"])
+            b["merchant"] = m.group(1).strip(" .") if m else None
+            b["merchant_from"] = "texto" if m else None
+        else:
+            b["merchant_from"] = "título"
+        if not b["percent"]:  # 0% (p. ej. "0% comisión") no es un descuento
+            continue
         b["status"], b["status_reasons"] = status_for(b, today)
         res.append(b)
     return res

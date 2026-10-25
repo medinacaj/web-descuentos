@@ -64,3 +64,24 @@ def test_best_path_applies_cap_day_and_never_sums():
 def test_min_purchase_and_other_issuer():
     assert best_paths([_b("BCI", 30, days=[7], min_purchase=50000)], "Starbucks", 30000, TODAY, MY)["options"] == []
     assert applies_to_me(_b("Santander", 10), MY) == "no_te_aplica"
+
+
+def test_merchant_from_text_lucas_and_upto():
+    html = ('<div class="swiper-slide"><p>Solo para usuarios PedidosYa Plus, 40% de descuento en Market los días martes. '
+            'Tope 3 lucas, dos usos mensuales.</p></div>'
+            '<div class="swiper-slide"><p>Hasta 20% de devolución en Tenpesos.</p></div>'
+            '<div class="swiper-slide"><p>0% comisión en el pago de tu arriendo a través de Neat.</p></div>')
+    bs = bn.extract(html, "https://x.cl/beneficios", "MACH", TODAY)
+    by = {b["merchant"]: b for b in bs}
+    assert set(by) == {"Market", "Tenpesos"}
+    m = by["Market"]
+    assert (m["percent"], m["weekdays"], m["cap"], m["merchant_from"], m["status"]) == (40, [2], 3000, "texto", "confirmado")
+    t = by["Tenpesos"]
+    assert t["is_cashback"] and t["status"] == "sin_confirmar" and "porcentaje variable ('hasta')" in t["status_reasons"]
+
+
+def test_innermost_card_with_unhinted_wrappers():
+    html = ('<div class="card card-benefit-v2"><div class="card-body"><div class="d-flex"><h4>Copec</h4>'
+            '<span>15% de descuento los lunes con tarjeta de débito</span></div></div></div>')
+    bs = bn.extract(html, "https://bci.cl/beneficios", "BCI", TODAY)
+    assert [(b["merchant"], b["percent"], b["weekdays"], b["card_type"]) for b in bs] == [("Copec", 15, [1], "debito")]
