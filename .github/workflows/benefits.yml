@@ -1,0 +1,35 @@
+name: beneficios fase 2 (muestra)
+
+# Bajo demanda o al cambiar el recolector de beneficios. No envía correos ni escribe en la base de datos.
+on:
+  workflow_dispatch:
+  push:
+    paths: [scrapers/banks/**, core/payment_path.py, tools/collect_benefits.py, .github/workflows/benefits.yml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: benefits
+  cancel-in-progress: false
+
+jobs:
+  benefits:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q tests/test_benefits.py
+      - run: python -m playwright install --with-deps chromium
+      - name: Recolectar beneficios
+        run: python -m tools.collect_benefits
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benefits
+          path: reports/benefits.json
+          retention-days: 7
