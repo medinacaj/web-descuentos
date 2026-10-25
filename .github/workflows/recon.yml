@@ -12,7 +12,7 @@ on:
     paths: [config/sources.yaml, tools/**, scrapers/base.py, .github/workflows/recon.yml]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: recon
@@ -20,10 +20,14 @@ concurrency:
 
 jobs:
   recon:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -35,14 +39,48 @@ jobs:
         env:
           RECON_ONLY: ${{ inputs.only || '' }}
         run: python -m tools.recon_cli
-      - uses: actions/upload-artifact@v4
+      - name: Transferir resultados al trabajo de publicación
+        uses: actions/upload-artifact@v4
         with:
-          name: recon-report
-          path: reports/
-      - name: Guardar mapa en el repositorio
+          name: recon-results
+          path: |
+            reports/
+            config/sources.yaml
+          retention-days: 1
+          if-no-files-found: error
+
+  publish:
+    needs: recon
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Recuperar los resultados del trabajo sin escritura
+        uses: actions/download-artifact@v4
+        with:
+          name: recon-results
+          path: .
+      - name: Guardar únicamente los resultados previstos
+        shell: bash
         run: |
+          set -euo pipefail
+          case "$GITHUB_REF_NAME" in
+            main|master) ;;
+            *) echo "::error::Rama no autorizada"; exit 1 ;;
+          esac
           git config user.name "recon-bot"
           git config user.email "recon-bot@users.noreply.github.com"
-          git add reports/ config/sources.yaml
-          git diff --cached --quiet || git commit -m "recon: mapa de legibilidad $(date +%F) [skip ci]"
-          git push
+          git add -- reports/ config/sources.yaml
+          if git diff --cached --quiet; then
+            echo "No hay cambios en los resultados"
+            exit 0
+          fi
+          git commit -m "recon: mapa de legibilidad $(date +%F) [skip ci]"
+          git fetch --no-tags origin "$GITHUB_REF_NAME"
+          git rebase "origin/$GITHUB_REF_NAME"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"

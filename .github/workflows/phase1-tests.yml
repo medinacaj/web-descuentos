@@ -19,3 +19,5 @@ jobs:
       - run: python -m unittest tests.test_phase1 -v
       - name: Validar filtros manuales de reconocimiento
         run: python -m unittest tests.test_recon_cli -v
+      - name: Verificar mínimos privilegios del workflow de reconocimiento
+        run: python -m unittest tests.test_recon_privilege -v
