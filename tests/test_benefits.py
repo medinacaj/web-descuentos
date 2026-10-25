@@ -85,3 +85,9 @@ def test_innermost_card_with_unhinted_wrappers():
             '<span>15% de descuento los lunes con tarjeta de débito</span></div></div></div>')
     bs = bn.extract(html, "https://bci.cl/beneficios", "BCI", TODAY)
     assert [(b["merchant"], b["percent"], b["weekdays"], b["card_type"]) for b in bs] == [("Copec", 15, [1], "debito")]
+
+
+def test_rates_are_not_discounts_and_merchant_cleanup():
+    assert bn.PCT_RE.findall("tasa desde 0,85% y Supertasa de 3,99%") == []
+    assert bn.clean_merchant("App McDonald's Aprovecha 40") == "App McDonald's"
+    assert bn.clean_merchant("Güeros") == "Güeros"

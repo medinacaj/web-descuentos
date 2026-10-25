@@ -11,7 +11,7 @@ from urllib.parse import urljoin
 
 from selectolax.lexbor import LexborHTMLParser
 
-PCT_RE = re.compile(r"(?<!\d)(\d{1,2})\s?%")
+PCT_RE = re.compile(r"(?<![\d,.])(\d{1,2})\s?%")  # excluye tasas como 0,85%
 CLP_RE = re.compile(r"\$\s?(\d{1,3}(?:\.\d{3})+|\d{4,})")
 DAYS = {"lunes": 1, "martes": 2, "miércoles": 3, "miercoles": 3, "jueves": 4, "viernes": 5, "sábado": 6, "sabado": 6, "domingo": 7}
 DAY_RE = re.compile(r"\b(lunes|martes|mi[ée]rcoles|jueves|viernes|s[áa]bados?|domingos?)\b", re.I)
@@ -123,6 +123,17 @@ def status_for(b: dict, today: date) -> tuple[str, list[str]]:
     return ("confirmado", []) if not missing else ("sin_confirmar", missing)
 
 
+CTA_RE = re.compile(r"\s+(?:aprovecha|disfruta|obt[ée]n|paga|pagando|con\s+tu|hasta|ahorra|\d).*$", re.I)
+
+
+def clean_merchant(s: str | None) -> str | None:
+    """Corta el nombre antes de llamados a la acción o cifras: "App McDonald's Aprovecha 40" → "App McDonald's"."""
+    if not s:
+        return None
+    s = CTA_RE.sub("", s).strip(" .,:;-")
+    return s or None
+
+
 def benefit_blocks(html: str, page_url: str) -> list[dict]:
     """Bloques de la página que parecen un beneficio: un elemento con % y un título propio."""
     tree = LexborHTMLParser(html or "")
@@ -148,7 +159,7 @@ def benefit_blocks(html: str, page_url: str) -> list[dict]:
             continue
         seen.add(key)
         heading = node.css_first("h1, h2, h3, h4, h5, strong, b, [class*=title], [class*=nombre], [class*=name]")
-        merchant = heading.text(strip=True) if heading else None
+        merchant = clean_merchant(heading.text(strip=True)) if heading else None
         if merchant and (PCT_RE.search(merchant) or len(merchant) > 60):
             merchant = None
         link = node.attributes.get("href") if node.tag == "a" else None
